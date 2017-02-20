@@ -1,0 +1,491 @@
+@media only screen and (max-width: 999em) {
+
+// Everything
+body{
+  position: relative;
+  height: auto;
+  min-height: 100% !important;
+  font-family: 'Poppins', sans-serif !important;
+  color: #ecf0f1 !important;
+  .container{
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
+
+.panel.panel-default{
+  border-radius: 0px;
+}
+
+// Navigation
+nav{
+  header{
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+    color: white;
+    margin: auto;
+    top: 2px;
+    h5{
+      text-align: center;
+    }
+  }
+  #navLinks{
+    display: none;
+    background-color: grey;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    z-index: 9;
+    ul{
+      margin: 0;
+      padding: 40px 0 0 0;
+      li{
+        text-align: center;
+        list-style-type: none;
+        margin: 20px 0;
+        font-size: 1.5em;
+      }
+    }
+  }
+  i{
+    position: fixed;
+    top: 21px;
+    right: 20px;
+    z-index: 3;
+    margin-top: 11px;
+    cursor: pointer;
+  }
+  .fa{
+    font-size: 2.5em;
+  }
+}
+// All
+#homeSection, #lookupSection, #adminSection{
+  margin-top: 80px;
+}
+
+
+// Home Page
+
+#homeSection{
+  width: 100%;
+  input{
+    display: block;
+    width: 75%;
+    margin: auto;
+    border: 1px solid black;
+    text-align: center;
+  }
+}
+
+// Lookup Page
+
+#lookupSection{
+
+  nav{
+    width: 100%;
+    height: 80px;
+    background-color: #3498DB;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    input{
+      width: 70%;
+      height: 35px;
+      margin-left: 15px;
+      margin-top: 25px;
+      font-size: 1.1em;
+    }
+  }
+
+
+  #itemOutputList{
+    height: 80%;
+    overflow: auto;
+    article{
+      height: 90px;
+      .itemIcon{
+        height: 88px;
+        width: 20%;
+        display: inline-table;
+      }
+      .itemInfo{
+        width: 60%;
+        display: inline-table;
+        color: #34495e;
+        p{
+          position: relative;
+          top: 15px;
+        }
+      }
+      .itemClick{
+        width: 10%;
+        display: inline-table;
+        h2{
+          margin: 13px 0 0 0;
+          position: absolute;
+          right: 15px;
+          font-size: 1.6em;
+          color: #bababa;
+        }
+      }
+    }//End of Item Output Article
+  }//End of Item Output List
+
+  // Alternate Icon Background Colors
+  #itemOutputList article:nth-child(4n+1) .itemIcon{
+    background-color: #2ecc71;
+  }
+  #itemOutputList article:nth-child(4n+2) .itemIcon{
+    background-color: #2980b9;
+  }
+  #itemOutputList article:nth-child(4n+3) .itemIcon{
+    background-color: #9b59b6;
+  }
+  #itemOutputList article:nth-child(4n+4) .itemIcon{
+    background-color: #e74c3c;
+  }
+
+  #viewItem{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    z-index: 999;
+    border: none;
+    background-color: white;
+    header{
+      height: 60px;
+      padding: 15px;
+      background-color: #3498DB;
+      h1{
+        font-size: 1.5em;
+      }
+      i{
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+      }
+    }
+
+    // View Item Content
+    article{
+      color: #34495e;
+      #itemStatusPane{
+        height: 50px;
+        font-size: 1.2em;
+        padding: 15px 10px;
+      }
+      form{
+        aside{
+          width: 100%;
+          height: 50px;
+          padding: 15px 10px;
+          i{
+            width: 10%;
+            text-align: center;
+          }
+          select{
+            width: 80%;
+            height: 40px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #34495e;
+            font-size: 1.3em;
+            color: #34495e;
+          }
+          input{
+            width: 80%;
+            height: 30px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid #34495e;
+            font-size: 1.3em;
+            color: #34495e;
+            padding-left: 1.5%;
+          }
+          textarea{
+            resize: none;
+            width: 80%;
+            background-color: transparent;
+            border: none;
+            font-size: 1.3em;
+            color: #34495e;
+            position: absolute;
+            margin-left: 5px;
+            height: 70px;
+          }
+        }
+
+        // Aside Variations
+        .userSelect{
+          // background-color: blue;
+          i:nth-child(3){
+            font-size: 20px;
+            position: absolute;
+            right: 20px;
+            padding-top: 15px;
+          }
+        }
+        .userPin{
+          // background-color: yellow;
+        }
+        .itemNotesPane{
+          // background-color: green;
+          height: 80px;
+        }
+
+        // Checkout/Return Message
+        h3{
+          padding: 0 15px;
+          font-size: 1.2em;
+          line-height: 135%;
+        }
+
+        // Checkout/Return Button
+        button{
+          position: absolute;
+          right: 15px;
+          bottom: 15px;
+          font-size: 1.5em;
+          color: white;
+          border: none;
+          padding: 10px;
+          background-color: #3498DB;
+        }
+
+      }// End of Form
+    }//End View Item Content
+
+
+
+
+    select{
+      border: 1px solid black;
+      margin: 10px 0;
+      padding: 5px;
+      height: 27px;
+      border-radius: 1px;
+    }
+
+  }//End of View Item
+}//End of Lookup Section
+
+.itemSelect{
+  cursor: pointer;
+}
+
+// Admin Page
+
+#adminSection{
+  width: 100%;
+
+  nav{
+    width: 100%;
+    height: 50px;
+    background-color: #3498DB;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    padding-top: 30px;
+    text-align: center;
+    button{
+      margin: auto;
+      font-size: 1.2em;
+      background-color: #2ecc71;
+      display: inline-block;
+      border: none;
+      padding: 10px 15px;
+      color: #ecf0f1;
+    }
+  }
+
+  #viewStock, #viewUsers{
+    display: none;
+    header{
+      width: 100%;
+      background: #95a5a6;
+      position: fixed;
+      z-index: 2;
+      .searchArea{
+        padding: 10px 15px;
+        height: 40px;
+        input{
+          height: 35px;
+          width: 80%;
+        }
+        i{
+          margin: 0;
+          float: right;
+          position: absolute;
+          right: 20px;
+          font-size: 2.3em;
+          color: #ecf0f1;
+        }
+      }//End Search Area
+    }//End Header
+
+    #createStock, #createUser{
+      display: none;
+      background-color: white;
+      max-width: 100%;
+
+      h3{
+        padding: 10px 15px;
+        background-color: #3498DB;
+      }
+      form{
+        background-color: white;
+        border-bottom: solid 1px #95a5a6;
+        padding: 10px 15px;
+        color: #34495e;
+        input{
+          width: 95%;
+          height: 35px;
+          border: none;
+          border-bottom: 1px solid #95a5a6;
+          font-size: 1.2em;
+          margin: 10px 0;
+        }
+        textarea{
+          border: 1px solid #95a5a6;
+          font-size: 1.2em;
+          resize: none;
+          width: 95%;
+        }
+        button{
+          margin: 10px 0;
+          padding: 10px 15px;
+          // border: 1px solid #95a5a6;
+          border: none;
+          font-size: 1.2em;
+        }
+      }
+
+    }//End Of Create Stock
+
+
+    // Info From Database
+    .repeatContainer{
+      color: #34495e;
+      padding-top: 65px;
+      article{
+        margin-top: 15px;
+        padding: 0 15px;
+        padding-bottom: 15px;
+        border-bottom: solid 20px #efefef;
+        background-color: white;
+        i{
+          position: absolute;
+          right: 15px;
+          font-size: 2em;
+        }
+        h2{
+          font-size: 1.3em;
+          width: 90%;
+        }
+        h3{
+          margin: 5px 0;
+        }
+        span{
+          position: relative;
+          margin-left: 55px;
+          top: -24px;
+          line-height: 140%;
+        }
+      }
+      article:nth-last-child(1){
+        border: none;
+      }
+    }
+
+  }// End Of View Stock/View Users
+
+  #editStock, #editUser{
+    border-radius: 0;
+    display: none;
+    position: fixed;
+    background: white;
+    height: 101%;
+    width: 101%;
+    margin-top: -1px;
+    top: 0px;
+    z-index: 1000;
+    left: 0;
+
+    header{
+      width: 100%;
+      padding: 15px;
+      height: 60px;
+      background-color: #3498DB;
+      h1{
+        font-size: 1.5em;
+      }
+      i{
+        font-size: 2em;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+      }
+    }
+
+    form{
+      max-width: 100%;
+      padding: 20px 15px;
+      span{
+        display: inherit;
+        color: #34495e;
+        margin-top: 15px;
+      }
+      input{
+        width: 80%;
+        height: 30px;
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid #34495e;
+        font-size: 1.3em;
+        color: #34495e;
+        padding-left: 1.5%;
+        display: inherit;
+      }
+      textarea{
+        border: 2px solid #34495e;
+        margin: 15px 0 0 0;
+        resize: none;
+        width: 80%;
+        background-color: transparent;
+        font-size: 1.3em;
+        color: #34495e;
+        position: absolute;
+        height: 200px;
+      }
+      .buttons{
+        position: absolute;
+        bottom: 20px;
+        button{
+          font-size: 1.2em;
+          background-color: #3498DB;
+          border: none;
+          padding: 10px 15px;
+          color: #ecf0f1;
+        }
+      }
+
+    }
+
+
+  }//End of Edit Stock
+
+}//End Admin Section
+
+
+
+
+// End of Phone
+}

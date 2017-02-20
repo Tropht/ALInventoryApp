@@ -1,0 +1,352 @@
+@media only screen and (max-width: 999em) {
+  body {
+    position: relative;
+    height: auto;
+    min-height: 100% !important;
+    font-family: 'Poppins', sans-serif !important;
+    color: #ecf0f1 !important; }
+    body .container {
+      padding-left: 0px;
+      padding-right: 0px; }
+
+  .panel.panel-default {
+    border-radius: 0px; }
+
+  nav header {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
+    color: white;
+    margin: auto;
+    top: 2px; }
+    nav header h5 {
+      text-align: center; }
+  nav #navLinks {
+    display: none;
+    background-color: grey;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    top: 0px;
+    z-index: 9; }
+    nav #navLinks ul {
+      margin: 0;
+      padding: 40px 0 0 0; }
+      nav #navLinks ul li {
+        text-align: center;
+        list-style-type: none;
+        margin: 20px 0;
+        font-size: 1.5em; }
+  nav i {
+    position: fixed;
+    top: 21px;
+    right: 20px;
+    z-index: 3;
+    margin-top: 11px;
+    cursor: pointer; }
+  nav .fa {
+    font-size: 2.5em; }
+
+  #homeSection, #lookupSection, #adminSection {
+    margin-top: 80px; }
+
+  #homeSection {
+    width: 100%; }
+    #homeSection input {
+      display: block;
+      width: 75%;
+      margin: auto;
+      border: 1px solid black;
+      text-align: center; }
+
+  #lookupSection nav {
+    width: 100%;
+    height: 80px;
+    background-color: #3498DB;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1; }
+    #lookupSection nav input {
+      width: 70%;
+      height: 35px;
+      margin-left: 15px;
+      margin-top: 25px;
+      font-size: 1.1em; }
+  #lookupSection #itemOutputList {
+    height: 80%;
+    overflow: auto; }
+    #lookupSection #itemOutputList article {
+      height: 90px; }
+      #lookupSection #itemOutputList article .itemIcon {
+        height: 88px;
+        width: 20%;
+        display: inline-table; }
+      #lookupSection #itemOutputList article .itemInfo {
+        width: 60%;
+        display: inline-table;
+        color: #34495e; }
+        #lookupSection #itemOutputList article .itemInfo p {
+          position: relative;
+          top: 15px; }
+      #lookupSection #itemOutputList article .itemClick {
+        width: 10%;
+        display: inline-table; }
+        #lookupSection #itemOutputList article .itemClick h2 {
+          margin: 13px 0 0 0;
+          position: absolute;
+          right: 15px;
+          font-size: 1.6em;
+          color: #bababa; }
+  #lookupSection #itemOutputList article:nth-child(4n+1) .itemIcon {
+    background-color: #2ecc71; }
+  #lookupSection #itemOutputList article:nth-child(4n+2) .itemIcon {
+    background-color: #2980b9; }
+  #lookupSection #itemOutputList article:nth-child(4n+3) .itemIcon {
+    background-color: #9b59b6; }
+  #lookupSection #itemOutputList article:nth-child(4n+4) .itemIcon {
+    background-color: #e74c3c; }
+  #lookupSection #viewItem {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    z-index: 999;
+    border: none;
+    background-color: white; }
+    #lookupSection #viewItem header {
+      height: 60px;
+      padding: 15px;
+      background-color: #3498DB; }
+      #lookupSection #viewItem header h1 {
+        font-size: 1.5em; }
+      #lookupSection #viewItem header i {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer; }
+    #lookupSection #viewItem article {
+      color: #34495e; }
+      #lookupSection #viewItem article #itemStatusPane {
+        height: 50px;
+        font-size: 1.2em;
+        padding: 15px 10px; }
+      #lookupSection #viewItem article form aside {
+        width: 100%;
+        height: 50px;
+        padding: 15px 10px; }
+        #lookupSection #viewItem article form aside i {
+          width: 10%;
+          text-align: center; }
+        #lookupSection #viewItem article form aside select {
+          width: 80%;
+          height: 40px;
+          background-color: transparent;
+          border: none;
+          border-bottom: 2px solid #34495e;
+          font-size: 1.3em;
+          color: #34495e; }
+        #lookupSection #viewItem article form aside input {
+          width: 80%;
+          height: 30px;
+          background-color: transparent;
+          border: none;
+          border-bottom: 2px solid #34495e;
+          font-size: 1.3em;
+          color: #34495e;
+          padding-left: 1.5%; }
+        #lookupSection #viewItem article form aside textarea {
+          resize: none;
+          width: 80%;
+          background-color: transparent;
+          border: none;
+          font-size: 1.3em;
+          color: #34495e;
+          position: absolute;
+          margin-left: 5px;
+          height: 70px; }
+      #lookupSection #viewItem article form .userSelect i:nth-child(3) {
+        font-size: 20px;
+        position: absolute;
+        right: 20px;
+        padding-top: 15px; }
+      #lookupSection #viewItem article form .itemNotesPane {
+        height: 80px; }
+      #lookupSection #viewItem article form h3 {
+        padding: 0 15px;
+        font-size: 1.2em;
+        line-height: 135%; }
+      #lookupSection #viewItem article form button {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        font-size: 1.5em;
+        color: white;
+        border: none;
+        padding: 10px;
+        background-color: #3498DB; }
+    #lookupSection #viewItem select {
+      border: 1px solid black;
+      margin: 10px 0;
+      padding: 5px;
+      height: 27px;
+      border-radius: 1px; }
+
+  .itemSelect {
+    cursor: pointer; }
+
+  #adminSection {
+    width: 100%; }
+    #adminSection nav {
+      width: 100%;
+      height: 50px;
+      background-color: #3498DB;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      padding-top: 30px;
+      text-align: center; }
+      #adminSection nav button {
+        margin: auto;
+        font-size: 1.2em;
+        background-color: #2ecc71;
+        display: inline-block;
+        border: none;
+        padding: 10px 15px;
+        color: #ecf0f1; }
+    #adminSection #viewStock, #adminSection #viewUsers {
+      display: none; }
+      #adminSection #viewStock header, #adminSection #viewUsers header {
+        width: 100%;
+        background: #95a5a6;
+        position: fixed;
+        z-index: 2; }
+        #adminSection #viewStock header .searchArea, #adminSection #viewUsers header .searchArea {
+          padding: 10px 15px;
+          height: 40px; }
+          #adminSection #viewStock header .searchArea input, #adminSection #viewUsers header .searchArea input {
+            height: 35px;
+            width: 80%; }
+          #adminSection #viewStock header .searchArea i, #adminSection #viewUsers header .searchArea i {
+            margin: 0;
+            float: right;
+            position: absolute;
+            right: 20px;
+            font-size: 2.3em;
+            color: #ecf0f1; }
+      #adminSection #viewStock #createStock, #adminSection #viewStock #createUser, #adminSection #viewUsers #createStock, #adminSection #viewUsers #createUser {
+        display: none;
+        background-color: white;
+        max-width: 100%; }
+        #adminSection #viewStock #createStock h3, #adminSection #viewStock #createUser h3, #adminSection #viewUsers #createStock h3, #adminSection #viewUsers #createUser h3 {
+          padding: 10px 15px;
+          background-color: #3498DB; }
+        #adminSection #viewStock #createStock form, #adminSection #viewStock #createUser form, #adminSection #viewUsers #createStock form, #adminSection #viewUsers #createUser form {
+          background-color: white;
+          border-bottom: solid 1px #95a5a6;
+          padding: 10px 15px;
+          color: #34495e; }
+          #adminSection #viewStock #createStock form input, #adminSection #viewStock #createUser form input, #adminSection #viewUsers #createStock form input, #adminSection #viewUsers #createUser form input {
+            width: 95%;
+            height: 35px;
+            border: none;
+            border-bottom: 1px solid #95a5a6;
+            font-size: 1.2em;
+            margin: 10px 0; }
+          #adminSection #viewStock #createStock form textarea, #adminSection #viewStock #createUser form textarea, #adminSection #viewUsers #createStock form textarea, #adminSection #viewUsers #createUser form textarea {
+            border: 1px solid #95a5a6;
+            font-size: 1.2em;
+            resize: none;
+            width: 95%; }
+          #adminSection #viewStock #createStock form button, #adminSection #viewStock #createUser form button, #adminSection #viewUsers #createStock form button, #adminSection #viewUsers #createUser form button {
+            margin: 10px 0;
+            padding: 10px 15px;
+            border: none;
+            font-size: 1.2em; }
+      #adminSection #viewStock .repeatContainer, #adminSection #viewUsers .repeatContainer {
+        color: #34495e;
+        padding-top: 65px; }
+        #adminSection #viewStock .repeatContainer article, #adminSection #viewUsers .repeatContainer article {
+          margin-top: 15px;
+          padding: 0 15px;
+          padding-bottom: 15px;
+          border-bottom: solid 20px #efefef;
+          background-color: white; }
+          #adminSection #viewStock .repeatContainer article i, #adminSection #viewUsers .repeatContainer article i {
+            position: absolute;
+            right: 15px;
+            font-size: 2em; }
+          #adminSection #viewStock .repeatContainer article h2, #adminSection #viewUsers .repeatContainer article h2 {
+            font-size: 1.3em;
+            width: 90%; }
+          #adminSection #viewStock .repeatContainer article h3, #adminSection #viewUsers .repeatContainer article h3 {
+            margin: 5px 0; }
+          #adminSection #viewStock .repeatContainer article span, #adminSection #viewUsers .repeatContainer article span {
+            position: relative;
+            margin-left: 55px;
+            top: -24px;
+            line-height: 140%; }
+        #adminSection #viewStock .repeatContainer article:nth-last-child(1), #adminSection #viewUsers .repeatContainer article:nth-last-child(1) {
+          border: none; }
+    #adminSection #editStock, #adminSection #editUser {
+      border-radius: 0;
+      display: none;
+      position: fixed;
+      background: white;
+      height: 101%;
+      width: 101%;
+      margin-top: -1px;
+      top: 0px;
+      z-index: 1000;
+      left: 0; }
+      #adminSection #editStock header, #adminSection #editUser header {
+        width: 100%;
+        padding: 15px;
+        height: 60px;
+        background-color: #3498DB; }
+        #adminSection #editStock header h1, #adminSection #editUser header h1 {
+          font-size: 1.5em; }
+        #adminSection #editStock header i, #adminSection #editUser header i {
+          font-size: 2em;
+          position: absolute;
+          top: 20px;
+          right: 20px; }
+      #adminSection #editStock form, #adminSection #editUser form {
+        max-width: 100%;
+        padding: 20px 15px; }
+        #adminSection #editStock form span, #adminSection #editUser form span {
+          display: inherit;
+          color: #34495e;
+          margin-top: 15px; }
+        #adminSection #editStock form input, #adminSection #editUser form input {
+          width: 80%;
+          height: 30px;
+          background-color: transparent;
+          border: none;
+          border-bottom: 2px solid #34495e;
+          font-size: 1.3em;
+          color: #34495e;
+          padding-left: 1.5%;
+          display: inherit; }
+        #adminSection #editStock form textarea, #adminSection #editUser form textarea {
+          border: 2px solid #34495e;
+          margin: 15px 0 0 0;
+          resize: none;
+          width: 80%;
+          background-color: transparent;
+          font-size: 1.3em;
+          color: #34495e;
+          position: absolute;
+          height: 200px; }
+        #adminSection #editStock form .buttons, #adminSection #editUser form .buttons {
+          position: absolute;
+          bottom: 20px; }
+          #adminSection #editStock form .buttons button, #adminSection #editUser form .buttons button {
+            font-size: 1.2em;
+            background-color: #3498DB;
+            border: none;
+            padding: 10px 15px;
+            color: #ecf0f1; } }
+
+/*# sourceMappingURL=phone.css.map */

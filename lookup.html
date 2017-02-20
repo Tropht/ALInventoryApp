@@ -1,0 +1,103 @@
+<div class="container" ng-controller="inventoryCtrl">
+
+  <section id="lookupSection">
+
+    <!-- Navigation for Lookup Section -->
+
+    <nav>
+      <input type="text" name="name" ng-model="searchStock" placeholder="Search by item name or type">
+    </nav>
+
+    <!-- Item List -->
+    <section id="itemOutputList">
+      <article ng-click="itemClick()" ng-repeat="item in dbStock | searchForStock:searchStock">
+        <aside class="itemIcon">
+            Icon
+        </aside>
+        <aside class="itemInfo">
+          <p>
+            {{item.name}}
+          </p>
+        </aside>
+        <aside class="itemClick">
+          <h2>
+            >
+          </h2>
+        </aside>
+      </article>
+    </section>
+
+    <!-- View Selected Item -->
+    <section id="viewItem" style="display: none;">
+      <header>
+        <h1 id="title"></h1>
+        <i class="fa fa-times" ng-click="closeViewItem()" style="font-size: 2em;"></i>
+      </header>
+      <article>
+        <!-- Hidden Item Name -->
+        <input type="text" placeholder="Item Name" ng-model="checkedOutItem.name" style="display: none;" readonly>
+
+        <!-- Item Status -->
+        <aside id="itemStatusPane">
+          <h4>This item is: <span id="itemStatus"></span></h4>
+        </aside>
+
+        <!-- Check Out Form -->
+        <form id="checkOutForm">
+
+          <aside class="userSelect">
+            <i class="fa fa-user fa-2x" aria-hidden="true"></i>
+            <select ng-model="checkedOutItem.user" required>
+              <option ng-repeat="user in dbUsers">{{user.fname}} {{user.lname}}</option>
+            </select>
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+          </aside>
+
+          <aside class="userPin">
+            <i class="fa fa-key fa-2x" aria-hidden="true"></i>
+            <input id="checkOutPin" type="password" ng-model="checkOutPin" placeholder="PIN" required>
+          </aside>
+
+          <aside class="itemNotesPane">
+            <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
+            <textarea class="itemNotes" readonly></textarea>
+          </aside>
+
+          <h3>To check this item out, please select your name, enter your pin, and click "Check Out"</h3>
+
+          <button id="checkOutButton" type="submit" class="btn btn-info" name="button" ng-click="checkOut()">Check Out</button>
+        </form>
+
+        <!-- Return Form -->
+        <form id="returnForm">
+
+          <span>This item is checkout by:</span> <input type="input" ng-model="checkedUser" readonly>
+
+          <aside class="userSelect">
+            <i class="fa fa-user fa-2x" aria-hidden="true"></i>
+            <input type="input" ng-model="checkedUser" readonly>
+          </aside>
+
+          <aside class="userPin">
+            <i class="fa fa-key fa-2x" aria-hidden="true"></i>
+            <input type="password" ng-model="returnPin" placeholder="PIN" required>
+          </aside>
+
+          <aside class="itemNotesPane">
+            <i class="fa fa-comments fa-2x" aria-hidden="true"></i>
+            <textarea class="itemNotes" readonly></textarea>
+          </aside>
+
+          <h3>To return item, please enter your pin and click "Return Item"</h3>
+
+          <button id="returnItemButton" type="submit" class="btn btn-info" name="button" ng-click="returnItem()">Return Item</button>
+        </form>
+
+
+      </article>
+    </section>
+
+
+  </section>
+
+</div>

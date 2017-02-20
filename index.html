@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>AvantLink Inventory</title>
+
+    <!-- Reset CSS -->
+    <link href="styles/reset.css" rel="stylesheet" type="text/css" >
+    <!-- Phone CSS -->
+    <link href="styles/phone.css" rel="stylesheet" type="text/css" >
+    <!-- Tablet CSS -->
+    <link href="styles/tablet.css" rel="stylesheet" type="text/css" >
+    <!-- Desktop CSS -->
+    <link href="styles/desktop.css" rel="stylesheet" type="text/css" >
+    <!-- jQuery -->
+    <!-- <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> -->
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery UI -->
+      <!-- <script   src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"   integrity="sha256-eGE6blurk5sHj+rmkfsGYeKyZx3M4bG+ZlFyA7Kns7E="   crossorigin="anonymous"></script> -->
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+    <!-- Bootstrap -->
+    <!-- <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"> -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- <link href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"> -->
+    <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    <!-- Angular Script -->
+    <script src="bower_components/angular/angular.min.js"></script>
+    <!-- Angurlar UI Router -->
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <!-- Crypto  -->
+    <script type='text/javascript' src="bower_components/cryptojslib/rollups/aes.js"></script>
+    <script type='text/javascript' src="bower_components/angular-cryptography/mdo-angular-cryptography.js"></script>
+    <!-- Angular Permission UI -->
+    <script src="bower_components/angular-permission/dist/angular-permission.min.js"></script>
+    <script src="bower_components/angular-permission/dist/angular-permission-ui.min.js"></script>
+    <!-- Bootstrap UI -->
+    <script src="bower_components/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <!-- Firebase -->
+    <!-- <script src="bower_components/firebase/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularFire/2.0.2/angularfire.min.js"></script> -->
+    <script src="https://cdn.firebase.com/js/client/1.1.1/firebase.js"></script>
+        <script src="https://cdn.firebase.com/libs/angularfire/0.8.0/angularfire.min.js"></script>
+
+  </head>
+  <body ng-app="inventoryApp">
+
+    <nav>
+      <header>
+        <h5>AvantLink Inventory</h5>
+      </header>
+
+      <i class="fa fa-bars"></i>
+      <section id="navLinks">
+        <i class="fa fa-minus" aria-hidden="true"></i>
+        <ul>
+          <!-- <li>
+            <a ui-sref="home">Home</a>
+          </li> -->
+          <li>
+            <a ui-sref="item_lookup">Item Lookup</a>
+          </li>
+          <li>
+            <a ui-sref="admin">Admin</a>
+          </li>
+        </ul>
+      </section>
+
+    </nav>
+
+    <div ui-view></div>
+
+
+
+
+  </body>
+  <script src="scripts/script2.js"></script>
+</html>

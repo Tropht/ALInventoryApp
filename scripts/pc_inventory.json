@@ -1,0 +1,138 @@
+{
+  "users": [
+    {
+      "fname": "BLAKE",
+      "lname": "STEVENS",
+      "pin": "U2FsdGVkX191BvsMw3q4CMBZSV+9Jliq6MWGOma6m3w=",
+      "id": 109
+    },
+    {
+      "fname": "BRUCE",
+      "lname": "WAYNE",
+      "pin": "U2FsdGVkX1/dN399h28suTTeVcTJiYRJRGuQLDBkLa0=",
+      "id": 112
+    },
+    {
+      "fname": "RICK",
+      "lname": "DECKARD",
+      "pin": "U2FsdGVkX1+oy8lGg1f0qxmvYAYhvwsPTFd0GDyh5W8=",
+      "id": 113
+    },
+    {
+      "fname": "JET",
+      "lname": "LI",
+      "pin": "U2FsdGVkX198P1kl+MfSuyZKc/CAB2KGfO6DpVQ8Jgs=",
+      "id": 114
+    },
+    {
+      "fname": "BOB",
+      "lname": "MOSES",
+      "pin": "U2FsdGVkX1+Pr8YDC66rDWaDQXefUpNRK3cemkAYb2Y=",
+      "id": 115
+    }
+  ],
+  "stock": [
+    {
+      "name": "Belkin Thunderbolt to Hdmi Cable",
+      "type": "cable",
+      "id": 401,
+      "quantity": 2,
+      "lastUser": "BLAKE STEVENS"
+    },
+    {
+      "name": "MacBook Air",
+      "type": "laptop",
+      "id": 101,
+      "quantity": 1,
+      "lastUser": "BOB MOSES"
+    },
+    {
+      "name": "Rosewill Full Keyboard",
+      "type": "keyboard",
+      "id": 202,
+      "quantity": 1,
+      "lastUser": "JIMMY SMITH"
+    },
+    {
+      "name": "Asus Bluetooth Mouse",
+      "type": "mouse",
+      "quantity": 1,
+      "id": 402,
+      "lastUser": "WILLIAM ADAMA"
+    },
+    {
+      "name": "Toshiba 2GB Thumbdrive",
+      "type": "thumbdrive",
+      "quantity": 1,
+      "id": 403,
+      "lastUser": "BLAKE STEVENS"
+    },
+    {
+      "name": "iPhone 5",
+      "type": "phone",
+      "quantity": 1,
+      "id": 404
+    },
+    {
+      "name": "Sony Earbud Headphones",
+      "type": "headphones",
+      "quantity": 1,
+      "id": 405,
+      "lastUser": "WILLIAM ADAMA"
+    },
+    {
+      "name": "Power Strip",
+      "type": "cord",
+      "quantity": 1,
+      "id": 406
+    },
+    {
+      "name": "Samsung 21' Monitor",
+      "type": "monitor",
+      "quantity": 1,
+      "id": 407,
+      "notes": "Volume button isn't working"
+    },
+    {
+      "name": "Surface Pro 1",
+      "type": "tablet",
+      "quantity": 1,
+      "id": 408,
+      "lastUser": "RICK DECKARD",
+      "notes": "password: 1234\nusername: bob\nmore notes: blah blah blah"
+    },
+    {
+      "name": "HP Laptop",
+      "type": "laptop",
+      "notes": "Username: blah\nPassword: avantlink",
+      "id": 409
+    }
+  ],
+  "checkedItems": [
+    {
+      "name": "Toshiba 2GB Thumbdrive",
+      "user": "BOB MOSES",
+      "id": 1
+    },
+    {
+      "name": "Rosewill Full Keyboard",
+      "user": "RICK DECKARD",
+      "id": 5
+    },
+    {
+      "name": "iPhone 5",
+      "user": "BRUCE WAYNE",
+      "id": 7
+    },
+    {
+      "name": "Surface Pro 1",
+      "user": "WILLIAM ADAMA",
+      "id": 8
+    },
+    {
+      "name": "Microsoft Bluetooth Mobile Keyboard 6000",
+      "user": "BOB MOSES",
+      "id": 9
+    }
+  ]
+}
