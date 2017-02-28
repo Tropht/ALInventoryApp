@@ -10,6 +10,8 @@ body{
   .container{
     padding-left: 0px;
     padding-right: 0px;
+    margin: 0;
+    width: 100%;
   }
 }
 
@@ -29,6 +31,7 @@ nav{
     top: 2px;
     h5{
       text-align: center;
+      margin: 5px 0 0 0;
     }
   }
   #navLinks{
@@ -67,9 +70,9 @@ nav{
   margin-top: 80px;
 }
 
-
+// //////////
 // Home Page
-
+// //////////
 #homeSection{
   width: 100%;
   input{
@@ -81,8 +84,9 @@ nav{
   }
 }
 
+// ///////////
 // Lookup Page
-
+// ///////////
 #lookupSection{
 
   nav{
@@ -280,8 +284,35 @@ nav{
   cursor: pointer;
 }
 
-// Admin Page
+// //////////
+// Login Page
+// //////////
+#loginSection{
+  max-width: 100%;
+  padding: 0 10%;
+  nav{
+    width: 100%;
+    height: 80px;
+    background-color: #3498DB;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  form{
+    margin-top: 60px;
+    label{
+      color: #686868;
+    }
+  }
 
+}
+
+
+
+// ////////////
+// Admin Page
+// ////////////
 #adminSection{
   width: 100%;
 
@@ -486,6 +517,7 @@ nav{
 
 
 
-
+// ////////////
 // End of Phone
+// ////////////
 }
