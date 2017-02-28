@@ -50,9 +50,20 @@ nav{
         list-style-type: none;
         margin: 20px 0;
         font-size: 1.5em;
+        a{
+          color: white;
+          &:hover{
+            text-decoration: none;
+          }
+        }
+        button{
+          border: none;
+          background-color: transparent;
+          padding: 5px;
+        }
       }
-    }
-  }
+    }//End of UL
+  }//End of Navlinks
   i{
     position: fixed;
     top: 21px;
@@ -64,7 +75,7 @@ nav{
   .fa{
     font-size: 2.5em;
   }
-}
+}//End of Nav
 // All
 #homeSection, #lookupSection, #adminSection{
   margin-top: 80px;

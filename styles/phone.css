@@ -40,6 +40,14 @@
         list-style-type: none;
         margin: 20px 0;
         font-size: 1.5em; }
+        nav #navLinks ul li a {
+          color: white; }
+          nav #navLinks ul li a:hover {
+            text-decoration: none; }
+        nav #navLinks ul li button {
+          border: none;
+          background-color: transparent;
+          padding: 5px; }
   nav i {
     position: fixed;
     top: 21px;
