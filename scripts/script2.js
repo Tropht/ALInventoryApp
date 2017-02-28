@@ -79,7 +79,7 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
     //
     //
     //
-    //   // jQuery.get('https://alinventory-bce5f.firebaseio.com/users', function(data){
+    //   // jQuery.get('https://inventoryapp-bc585.firebaseio.com/users', function(data){
     //   //   console.log(data);
     //   // });
     //
@@ -163,30 +163,81 @@ inventoryApp.controller('loginController', function($scope, authService){
 })
 
 ///just a test ACW
-console.log(firebase.database().ref)
+console.log(firebase.database().ref('/users').limitToLast(10))
 
 ///////////////////////
 // Service for Users
 //////////////////////
-inventoryApp.service('dbUsers',['$http', function ($http) {
+inventoryApp.service('dbUsers', function(){
+
+  this.database = firebase.database()
 
   // Get Users From Database
   this.getUser = function(){
-    return $http.get('https://alinventory-bce5f.firebaseio.com/users.json');
+    return this.database.ref('/users').limitToLast(10).once('value', function(data){
+
+      return data.val();
+
+    });
   }
+
   this.createUser = function(data){
-    return $http.post('https://alinventory-bce5f.firebaseio.com/users.json', data);
+    console.log(data);
+    return this.database.ref('/users').push(data);
   }
+
   this.deleteUser = function(id){
     // Retrieve User Data
-    $http.get('https://alinventory-bce5f.firebaseio.com/users.json').success(function(userData){
+    this.database.ref('https://inventoryapp-bc585.firebaseio.com/users').success(function(userData){
 
       // Find user in User Object
       for(var user in userData){
         // Match User with ID
         if(id == userData[user].id){
 
-          return $http.delete('https://alinventory-bce5f.firebaseio.com/users/' + user + '.json').success(function(){
+          return $http.delete('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json').success(function(){
+            window.location.reload();
+          });
+
+        }//End If Statement
+      }//End For Loop
+    });
+  }//End Delete User
+  this.updateUser = function(id, data){
+    this.database.ref('/users').success(function(userData){
+      // Find user in User Objects
+      for(var user in userData){
+        // Match User with ID
+        if(id == userData[user].id){
+          return $http.put('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json', data).success(function(){
+            window.location.reload();
+          });
+        }//End If Statement
+      }//End For Loop
+    });
+  }//End Update User
+
+})
+/*
+inventoryApp.service('dbUsers',['$http', function ($http) {
+
+  // Get Users From Database
+  this.getUser = function(){
+    return $http.get('https://inventoryapp-bc585.firebaseio.com/users');
+  }
+  this.createUser = function(data){
+    return $http.post('https://inventoryapp-bc585.firebaseio.com/users', data);
+  }
+  this.deleteUser = function(id){
+    // Retrieve User Data
+    $http.get('https://inventoryapp-bc585.firebaseio.com/users').success(function(userData){
+
+      // Find user in User Object
+      for(var user in userData){
+        // Match User with ID
+        if(id == userData[user].id){
+
+          return $http.delete('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json').success(function(){
             window.location.reload();
           });
 
@@ -196,13 +247,13 @@ inventoryApp.service('dbUsers',['$http', function ($http) {
   }//End Delete User
   this.updateUser = function(id, data){
 
-    $http.get('https://alinventory-bce5f.firebaseio.com/users.json').success(function(userData){
+    $http.get('https://inventoryapp-bc585.firebaseio.com/users.json').success(function(userData){
 
       // Find user in User Objects
       for(var user in userData){
         // Match User with ID
         if(id == userData[user].id){
-          return $http.put('https://alinventory-bce5f.firebaseio.com/users/' + user + '.json', data).success(function(){
+          return $http.put('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json', data).success(function(){
             window.location.reload();
           });
         }//End If Statement
@@ -211,26 +262,28 @@ inventoryApp.service('dbUsers',['$http', function ($http) {
   }//End Update User
 
 }]);
+*/
 
 ////////////////////
 // Service for Stock
 ////////////////////
 inventoryApp.service('dbStock',['$http', function($http){
   // Get Stock From Database
+  this.database = firebase.database();
   this.getStock = function(){
-    return $http.get('https://alinventory-bce5f.firebaseio.com/stock.json');
+    return this.database.ref('/stock');
   }
 
   this.createStock = function(data){
-    return $http.post('https://alinventory-bce5f.firebaseio.com/stock.json', data);
+    return $http.post('/stock', data);
   }
   this.deleteStock = function(id){
 
     //Find Item
-    $http.get('https://alinventory-bce5f.firebaseio.com/stock.json').success(function(itemData){
+    this.database.ref('/stock').success(function(itemData){
       for(var item in itemData){
         if(id == itemData[item].id){
-          return $http.delete('https://alinventory-bce5f.firebaseio.com/stock/' + item + '.json').success(function(){
+          return $http.delete('https://inventoryapp-bc585.firebaseio.com/stock/' + item + '.json').success(function(){
             window.location.reload();
           });
         }//End If Statement
@@ -241,11 +294,11 @@ inventoryApp.service('dbStock',['$http', function($http){
   this.updateStock = function(id, data){
 
     // Find Item
-    $http.get('https://alinventory-bce5f.firebaseio.com/stock.json').success(function(itemData){
+    this.database.ref('/stock').success(function(itemData){
       for(var item in itemData){
         if(id == itemData[item].id){
 
-          return $http.put('https://alinventory-bce5f.firebaseio.com/stock/' + item + '.json', data).success(function(){
+          return $http.put('https://inventoryapp-bc585.firebaseio.com/stock/' + item + '.json', data).success(function(){
             window.location.reload();
 
           });
@@ -261,28 +314,29 @@ inventoryApp.service('dbStock',['$http', function($http){
 // Service for Checked Items
 //////////////////////////////
 inventoryApp.service('dbCheckedItems',['$http', function($http){
+  this.database = firebase.database();
   // Get Checked Items From Database
   this.getCheckedItems = function(){
-    return $http.get('https://alinventory-bce5f.firebaseio.com/checkedItems.json');
+    return this.database.ref('/checkedItems');
   }
   // Check out item (Post)
   this.checkOutItem = function(data){
-    return $http.post('https://alinventory-bce5f.firebaseio.com/checkedItems.json', data);
+    return $http.post('https://inventoryapp-bc585.firebaseio.com/checkedItems.json', data);
   }
   // Return Item (Delete)
   this.returnItems = function(id){
 
-    $http.get('https://alinventory-bce5f.firebaseio.com/checkedItems.json').success(function(returnDataInfo){
+    this.database.ref('/checkedItems').success(function(returnDataInfo){
       for(var item in returnDataInfo){
         if(id == returnDataInfo[item].id){
-          return $http.delete('https://alinventory-bce5f.firebaseio.com/checkedItems/' + item + '.json');
+          return $http.delete('https://inventoryapp-bc585.firebaseio.com/checkedItems/' + item + '.json');
         }
       }
     })
 
 
 
-    // return $http.delete('https://alinventory-bce5f.firebaseio.com/checkedItems/' + id);
+    // return $http.delete('https://inventoryapp-bc585.firebaseio.com/checkedItems/' + id);
   }
 }]);
 
@@ -382,12 +436,8 @@ var decrypted = $crypto.decrypt(encrypted);
 // /////////
 
   // Get Users
-  dbUsers.getUser().success(function(data){
-    $scope.dbUsers = data;
-
-    // console.log($scope.dbUsers);
-  });
-
+  $scope.dbUsers = dbUsers.getUser();
+  
   // Create Users
   $scope.newUser = {};
 
@@ -396,23 +446,24 @@ var decrypted = $crypto.decrypt(encrypted);
       console.log("Empty Field!")
     }else{
 
-      dbUsers.getUser().success(function(data){
-
+      var user = dbUsers.getUser()
+        /*what the heck is going on here?  Auto-increment for IDs?
         var idArray = [];
-        for(var id in data){
-          idArray.push(data[id].id);
+        console.log(user);
+        for(var id in user){
+          idArray.push(user[id].id);
         }
 
         var lastUserId = idArray.sort(function(a,b){return a-b});
-
+ */
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
-          "id"    : lastUserId[lastUserId.length - 1] + 1,
+          //"id"    : lastUserId[lastUserId.length - 1] + 1,
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
-        window.location.reload();
-      });
+        window.location = "#/admin";
+
     }//End Else Statement
   };//End Create New User
 
@@ -468,10 +519,9 @@ var decrypted = $crypto.decrypt(encrypted);
 // ///////////
 
   // Get Stock
-  dbStock.getStock().success(function(data){
-    $scope.dbStock = data;
+  var stock = dbStock.getStock()
+    $scope.dbStock = stock;
     // console.log($scope.dbStock);
-  });
 
   // Create Stock
   // $scope.newStock = {};
@@ -549,11 +599,9 @@ var checkedItemID;
 var checkedItemUserName;
 
 // Get Checked Items
-dbCheckedItems.getCheckedItems().success(function(data){
-  $scope.dbCheckedItems = data;
-
+var checkedItems = dbCheckedItems.getCheckedItems();
+  $scope.dbCheckedItems = checkedItems;
   // console.log($scope.dbCheckedItems);
-});
 
   // /////////////////
   // Check Item Status
@@ -777,9 +825,9 @@ dbCheckedItems.getCheckedItems().success(function(data){
   $scope.checkPin = function(user, pin){
     $scope.dbUsers;
 
-    dbUsers.getUser().success(function(data){
-      $scope.dbUsers = data;
-    });//End Get User Function
+    var users = dbUsers.getUser()
+      $scope.dbUsers = users;
+    //End Get User Function
 
     for(var userPin in $scope.dbUsers){
         // Match Names
