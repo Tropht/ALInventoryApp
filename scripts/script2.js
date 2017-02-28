@@ -25,43 +25,6 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
   })
 
 
-  // .state('amin',{
-  //   url: '/admin',
-  //   // onEnter: ['$stateParams', '$state', '$modal', '$resource', function($stateParams, $state, $modal, $resource){
-  //   //   // $modal.open({
-  //   //   //   templateUrl:'admin.html'
-  //   //   // })
-  //   // }]
-  // })
-
-
-// .state("admin", {
-//       url: "/admin",
-//       onEnter: ['$stateParams', '$state', '$modal', '$resource', function($stateParams, $state, $modal, $resource) {
-//           $modal.open({
-//               templateUrl: "admin.html",
-//               resolve: {
-//                 item: function() { new Item(123).get(); }
-//               },
-//               controller: ['$scope', 'item', function($scope, item) {
-//                 $scope.dismiss = function() {
-//                   $scope.$dismiss();
-//                 };
-//
-//                 $scope.save = function() {
-//                   item.update().then(function() {
-//                     $scope.$close(true);
-//                   });
-//                 };
-//               }]
-//           }).result.finally(function() {
-//               $state.go('^');
-//           });
-//       }]
-//   });
-
-
-
   .state('admin',{
     url: '/admin',
     templateUrl: 'admin.html',
@@ -76,27 +39,6 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
         console.log($scope.hello);
       })
     }
-    // onEnter: function(){
-    //
-    //
-    //
-    //   // jQuery.get('https://alinventory-bce5f.firebaseio.com/users', function(data){
-    //   //   console.log(data);
-    //   // });
-    //
-    //
-    //
-    //   // if(permission){
-    //   //   console.log("permission is true");
-    //   //   window.location.href = '/#/admin';
-    //   // }
-    //   // else{
-    //   //   console.log("permission is false");
-    //   //   window.location.href = '/#/notreal';
-    //   // }
-    //
-    //
-    // }
 
   })
 
@@ -253,7 +195,7 @@ inventoryApp.filter('searchForStock', function(){
 
     angular.forEach(arr, function(item){
 
-      if(item.name.toLowerCase().indexOf(searchStock) !== -1 || item.type.toLowerCase().indexOf(searchStock) !== -1){
+      if(item.name.toLowerCase().indexOf(searchStock) !== -1 || item.type.toLowerCase().indexOf(searchStock) !== -1 ){
         result.push(item);
       }
     });
@@ -264,29 +206,29 @@ inventoryApp.filter('searchForStock', function(){
 
 
 
-  // Search for Users
-  inventoryApp.filter('searchForUser', function(){
+// Search for Users
+inventoryApp.filter('searchForUser', function(){
 
-    return function(arr, searchUser){
+  return function(arr, searchUser){
 
-      if(!searchUser){
-        return arr;
-      }
-
-      var result = [];
-
-      searchUser = searchUser.toLowerCase();
-
-      angular.forEach(arr, function(user){
-
-        if(user.fname.toLowerCase().indexOf(searchUser) !== -1 || user.lname.toLowerCase().indexOf(searchUser) !== -1){
-          result.push(user);
-        }
-      });
-
-      return result;
+    if(!searchUser){
+      return arr;
     }
-  });
+
+    var result = [];
+
+    searchUser = searchUser.toLowerCase();
+
+    angular.forEach(arr, function(user){
+
+      if(user.fname.toLowerCase().indexOf(searchUser) !== -1 || user.lname.toLowerCase().indexOf(searchUser) !== -1){
+        result.push(user);
+      }
+    });
+
+    return result;
+  }
+});
 
 
 
