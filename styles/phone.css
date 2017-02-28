@@ -218,7 +218,7 @@
     width: 100%; }
     #adminSection nav {
       width: 100%;
-      height: 50px;
+      height: 80px;
       background-color: #3498DB;
       position: fixed;
       top: 0;
@@ -242,15 +242,17 @@
         position: fixed;
         z-index: 2; }
         #adminSection #viewStock header .searchArea, #adminSection #viewUsers header .searchArea {
-          padding: 10px 15px;
           height: 40px; }
           #adminSection #viewStock header .searchArea input, #adminSection #viewUsers header .searchArea input {
-            height: 35px;
-            width: 80%; }
+            height: 30px;
+            width: 80%;
+            margin: 10px 0 0 20px;
+            border-radius: 0px; }
           #adminSection #viewStock header .searchArea i, #adminSection #viewUsers header .searchArea i {
             margin: 0;
             float: right;
             position: absolute;
+            top: 10px;
             right: 20px;
             font-size: 2.3em;
             color: #ecf0f1; }
@@ -271,10 +273,13 @@
             height: 35px;
             border: none;
             border-bottom: 1px solid #95a5a6;
+            border-radius: 0;
+            box-shadow: none;
             font-size: 1.2em;
             margin: 10px 0; }
           #adminSection #viewStock #createStock form textarea, #adminSection #viewStock #createUser form textarea, #adminSection #viewUsers #createStock form textarea, #adminSection #viewUsers #createUser form textarea {
             border: 1px solid #95a5a6;
+            border-radius: 0;
             font-size: 1.2em;
             resize: none;
             width: 95%; }
@@ -282,10 +287,11 @@
             margin: 10px 0;
             padding: 10px 15px;
             border: none;
+            border-radius: 0;
             font-size: 1.2em; }
       #adminSection #viewStock .repeatContainer, #adminSection #viewUsers .repeatContainer {
         color: #34495e;
-        padding-top: 65px; }
+        padding-top: 50px; }
         #adminSection #viewStock .repeatContainer article, #adminSection #viewUsers .repeatContainer article {
           margin-top: 15px;
           padding: 0 15px;
@@ -295,7 +301,7 @@
           #adminSection #viewStock .repeatContainer article i, #adminSection #viewUsers .repeatContainer article i {
             position: absolute;
             right: 15px;
-            font-size: 2em; }
+            font-size: 1.7em; }
           #adminSection #viewStock .repeatContainer article h2, #adminSection #viewUsers .repeatContainer article h2 {
             font-size: 1.3em;
             width: 90%; }
@@ -343,13 +349,16 @@
           height: 30px;
           background-color: transparent;
           border: none;
+          border-radius: 0;
           border-bottom: 2px solid #34495e;
+          box-shadow: none;
           font-size: 1.3em;
           color: #34495e;
           padding-left: 1.5%;
           display: inherit; }
         #adminSection #editStock form textarea, #adminSection #editUser form textarea {
           border: 2px solid #34495e;
+          border-radius: 0;
           margin: 15px 0 0 0;
           resize: none;
           width: 80%;
@@ -365,6 +374,7 @@
             font-size: 1.2em;
             background-color: #3498DB;
             border: none;
+            border-radius: 0;
             padding: 10px 15px;
             color: #ecf0f1; } }
 
