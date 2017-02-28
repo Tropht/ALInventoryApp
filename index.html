@@ -23,7 +23,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
     <!-- Bootstrap -->
-    <!-- <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"> -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- <link href="bower_components/bootstrap-select/dist/css/bootstrap-select.min.css"> -->
     <script src="bower_components/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
@@ -54,12 +54,12 @@
       </header>
 
       <i class="fa fa-bars"></i>
-      <section id="navLinks">
+      <section id="navLinks" ng-controller="inventoryCtrl">
         <i class="fa fa-minus" aria-hidden="true"></i>
         <ul>
-          <!-- <li>
-            <a ui-sref="home">Home</a>
-          </li> -->
+          <li>
+            <button id="signOutButton">Sign Out</button>
+          </li>
           <li>
             <a ui-sref="item_lookup">Item Lookup</a>
           </li>
@@ -74,8 +74,39 @@
     <div ui-view></div>
 
 
+    <!-- Login modal
 
-
+    <div  class="modal fade bs-example-modal-lg" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div ng-controller="loginController" class="modal-content">
+          
+          <div class="input-group">
+            <label>Email/Username</label>
+          <input ng-model="uuName" class="form-control" id="uName" type="text"/>
+        </div>
+          <div class="input-group">
+            <label>Password</label>
+          <input ng-model="uuPass" class="form-control" id="uPass" type="password"/>
+        </div>
+          <button class="btn btn-default" data-dismiss="modal">Close</button>
+          <button ng-click="login()"; class="btn">Log In!</button>
+        </div>
+      </div>
+    </div>
+-->
   </body>
-  <script src="scripts/script2.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/3.6.10/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBCG-3BIKqD7iq-9CT7JvufKePQ7FrG02c",
+    authDomain: "inventoryapp-2f0b5.firebaseapp.com",
+    databaseURL: "https://inventoryapp-2f0b5.firebaseio.com",
+    storageBucket: "inventoryapp-2f0b5.appspot.com",
+    messagingSenderId: "64328263763"
+  };
+  firebase.initializeApp(config);
+</script>
+<script src="scripts/script2.js"></script>
 </html>

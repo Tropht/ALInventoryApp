@@ -13,7 +13,6 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
     templateUrl:'home.html'
   })
 
-
   .state('item_lookup',{
     url: '/item_lookup',
     templateUrl:'lookup.html'
@@ -101,6 +100,7 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
   })
 
 
+
 });
 
 // Set up Encryption
@@ -115,6 +115,55 @@ inventoryApp.config(function ($httpProvider) {
   $httpProvider.defaults.headers.put = {};
   $httpProvider.defaults.headers.patch = {};
 });
+
+//////////////////////////////
+///Authentication Service ACW
+/////////////////////////////
+inventoryApp.service('authService', function(){
+
+  this.auth = firebase.auth();
+  this.login = function(email, pass){
+    this.auth.signInWithEmailAndPassword(email, pass).then(function(user){
+
+      if(user){
+        jQuery('#loginError').addClass("alert alert-danger").html("Success!");
+        //jQuery('#loginModal').modal('hide');
+        window.location = "#/admin";
+      }
+
+    }).catch(function(error){
+
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(errorCode);
+      console.log(errorMessage);
+      jQuery('#loginError').addClass("alert alert-danger").html(errorMessage);
+
+    });
+    var user = this.auth.currentUser;
+    //console.log(user);
+  }///close this.login
+
+});
+
+////////////////////////
+///Login Controller ACW
+///////////////////////
+inventoryApp.controller('loginController', function($scope, authService){
+
+  $scope.uName; //linked to login inputs by ng-model
+  $scope.uPass;
+  $scope.uError;
+
+  $scope.login = function(){
+
+    authService.login($scope.uName, $scope.uPass);
+
+  }
+})
+
+///just a test ACW
+console.log(firebase.database().ref)
 
 ///////////////////////
 // Service for Users
@@ -149,7 +198,7 @@ inventoryApp.service('dbUsers',['$http', function ($http) {
 
     $http.get('https://alinventory-bce5f.firebaseio.com/users.json').success(function(userData){
 
-      // Find user in User Object
+      // Find user in User Objects
       for(var user in userData){
         // Match User with ID
         if(id == userData[user].id){
@@ -290,10 +339,35 @@ inventoryApp.filter('searchForStock', function(){
 
 
 
+var signOutButton = document.getElementById('signOutButton');
+jQuery('#signOutButton').on('click', function(){
+  firebase.auth().signOut();
+  window.location = "#/lookup";
+});
 
 // Put into Controller to use on page
-inventoryApp.controller('inventoryCtrl', ['$scope', 'dbUsers', 'dbStock', 'dbCheckedItems', '$crypto', function($scope, dbUsers, dbStock, dbCheckedItems, $crypto){
+inventoryApp.controller('inventoryCtrl', ['$scope', '$rootScope', 'dbUsers', 'dbStock', 'dbCheckedItems', '$crypto', 'authService', function($scope, $rootScope, dbUsers, dbStock, dbCheckedItems, $crypto, authService){
 
+authService.auth.onAuthStateChanged(function(user){
+  if(user){
+    jQuery("#signOutButton").show();
+  }else{
+    jQuery("#signOutButton").hide();
+  }
+});
+
+$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+  if(toState.name === "admin"){
+
+    if(!authService.auth.currentUser){
+      event.preventDefault();
+      window.location = "#/login";
+    }else{
+      console.log(authService.auth.currentUser);
+    }
+
+  };
+})
 
 // Encryption Test
 
