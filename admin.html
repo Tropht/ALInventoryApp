@@ -59,7 +59,7 @@
           <i class="fa fa-plus" data-toggle="collapse" ng-click="openCreateUser()"></i>
         </section>
 
-        <!-- Create Stock Popup -->
+        <!-- Create User Popup -->
         <section id="createUser">
             <h3>Create New User</h3>
             <form>
@@ -77,7 +77,7 @@
         <article ng-repeat="user in dbUsers | searchForUser:searchUser">
           <i class="fa fa-pencil" aria-hidden="true" ng-click="editUser()" style="font-size: 2em;"></i>
           <h2>{{user.fname}} {{user.lname}}</h2>
-          <h3>ID: {{user.id}}</h3>
+          <h3>ID:{{user.id}}</h3>
         </article>
       </main>
 
@@ -92,6 +92,7 @@
         </h1>
         <i class="fa fa-times" aria-hidden="true" ng-click="closeEditStock()"></i>
       </header>
+      <span id="updateStockMsg"></span>
       <form>
         <span>Name:</span>
         <input id="updateName" type="text" class="form-control" placeholder="Item name" ng-model="updatedStock.name" aria-describedby="sizing-addon1">
