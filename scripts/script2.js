@@ -174,47 +174,62 @@ inventoryApp.service('dbUsers', function(){
 
   // Get Users From Database
   this.getUser = function(){
-    return this.database.ref('/users').limitToLast(10).once('value', function(data){
+    return this.database.ref('/users').limitToLast(100).once('value', function(data){
 
+      console.log(data.val());
       return data.val();
 
     });
   }
 
   this.createUser = function(data){
-    console.log(data);
+    //console.log(data);
     return this.database.ref('/users').push(data);
   }
 
   this.deleteUser = function(id){
-    // Retrieve User Data
-    this.database.ref('https://inventoryapp-bc585.firebaseio.com/users').success(function(userData){
 
+    // Retrieve User Data
+    this.database.ref('/users').once('value', function(data){
+
+      userData = data.val()
       // Find user in User Object
       for(var user in userData){
+
+        var obj = userData[user];
+
+        for(var prop in obj){
         // Match User with ID
-        if(id == userData[user].id){
 
-          return $http.delete('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json').success(function(){
-            window.location.reload();
+        if(id == obj[prop]){
+
+          firebase.database().ref('/users/' + user).remove(function(error){
+            console.log(error);
           });
-
         }//End If Statement
+      }
       }//End For Loop
     });
   }//End Delete User
   this.updateUser = function(id, data){
-    this.database.ref('/users').success(function(userData){
-      // Find user in User Objects
+    firebase.database().ref('/users').once('value', function(result){
+      var userData = result.val();
+
       for(var user in userData){
+
+        var obj = userData[user];
+
+        for(var prop in obj){
         // Match User with ID
-        if(id == userData[user].id){
-          return $http.put('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json', data).success(function(){
-            window.location.reload();
-          });
+
+        if(id == obj[prop]){
+
+          firebase.database().ref('/users/' + user).update(data);
+
         }//End If Statement
       }//End For Loop
-    });
+    };
+  });
   }//End Update User
 
 })
@@ -267,69 +282,119 @@ inventoryApp.service('dbUsers',['$http', function ($http) {
 ////////////////////
 // Service for Stock
 ////////////////////
-inventoryApp.service('dbStock',['$http', function($http){
+inventoryApp.service('dbStock', function(){
   // Get Stock From Database
   this.database = firebase.database();
+
   this.getStock = function(){
-    return this.database.ref('/stock');
+    firebase.database().ref('/stock').limitToLast(1000).once('value', function(data){
+      console.log(data.val());
+      return data.val();
+    });
   }
 
   this.createStock = function(data){
-    return $http.post('/stock', data);
+
+    var pushKey = this.database.ref('/stock').push().key
+    this.database.ref('/stock/' + pushKey).update(data);
+
   }
+
   this.deleteStock = function(id){
 
     //Find Item
-    this.database.ref('/stock').success(function(itemData){
-      for(var item in itemData){
-        if(id == itemData[item].id){
-          return $http.delete('https://inventoryapp-bc585.firebaseio.com/stock/' + item + '.json').success(function(){
-            window.location.reload();
-          });
-        }//End If Statement
-      }//End For Loop
-    })//End Find Item
+    this.database.ref('/stock').once('value', function(data){
 
+      var itemData = data.val();
+
+      for(var item in itemData){
+
+        var obj = itemData[item];
+
+        for(var prop in obj){
+
+        if(id == obj[prop]){
+
+          firebase.database().ref('/stock/' + item).remove(function(error){
+            console.log(error);
+
+              });
+
+            };
+          }
+        }
+      //End For Loop
+    })//End Find Item
   }//End Delete Stock
+
   this.updateStock = function(id, data){
 
     // Find Item
-    this.database.ref('/stock').success(function(itemData){
+    firebase.database().ref('/stock').once('value', function(result){
+
+      var itemData = result.val();
+
       for(var item in itemData){
-        if(id == itemData[item].id){
 
-          return $http.put('https://inventoryapp-bc585.firebaseio.com/stock/' + item + '.json', data).success(function(){
-            window.location.reload();
+        var obj = itemData[item];
 
-          });
+        for(var prop in obj){
 
-        }//End If Statement
-      }//End For Loop
+        if(id == obj[prop]){
+
+          firebase.database().ref('/stock/' + item).update(data);
+
+          //add success notification here ACW
+
+          $('#updateStockMsg').html('Success!')
+
+          }//End If Statement
+        }//End For Loop 1
+      }//End For Loop 2
     })//End Find Item
+
   }//End Update Stock
 
-}]);
+});
 
 ///////////////////////////////
 // Service for Checked Items
 //////////////////////////////
-inventoryApp.service('dbCheckedItems',['$http', function($http){
+inventoryApp.service('dbCheckedItems', function(){
   this.database = firebase.database();
   // Get Checked Items From Database
   this.getCheckedItems = function(){
-    return this.database.ref('/checkedItems');
+    firebase.database().ref('/checkedItems').limitToLast(1000).once('value', function(data){
+      console.log(data.val());
+      return data.val();
+
+    });
   }
+
   // Check out item (Post)
   this.checkOutItem = function(data){
-    return $http.post('https://inventoryapp-bc585.firebaseio.com/checkedItems.json', data);
+    firebase.database().ref('/checkedItems').push(data);
   }
+
   // Return Item (Delete)
   this.returnItems = function(id){
 
-    this.database.ref('/checkedItems').success(function(returnDataInfo){
+    firebase.database().ref('/checkedItems').once('value', function(returnDataInfo){
+
       for(var item in returnDataInfo){
-        if(id == returnDataInfo[item].id){
-          return $http.delete('https://inventoryapp-bc585.firebaseio.com/checkedItems/' + item + '.json');
+
+        var obj = returnDataInfo[item];
+
+        for(var prop in obj){
+
+        if(id == obj[prop]){
+
+          firebase.database().ref('/checkedItems/' + item).remove(function(error){
+            console.log("Error checking item in. (Removing from DB)");
+
+          });
+
+          }
         }
       }
     })
@@ -338,7 +403,7 @@ inventoryApp.service('dbCheckedItems',['$http', function($http){
 
     // return $http.delete('https://inventoryapp-bc585.firebaseio.com/checkedItems/' + id);
   }
-}]);
+});
 
 // Search Feature
   // Search for Items
@@ -410,14 +475,23 @@ authService.auth.onAuthStateChanged(function(user){
   }
 });
 
-$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
-  if(toState.name === "admin"){
+//listen for state changes from ui-router
 
+$rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams, options){
+//if the state is trying to change to admin, check authentication
+  if(toState.name === "admin"){
+    //use our auth service to see what's up
     if(!authService.auth.currentUser){
+      //Not logged in! prevent the action and
+      //send them to the login form
       event.preventDefault();
       window.location = "#/login";
+
     }else{
+
+      //they're logged in, print the user to the console.
       console.log(authService.auth.currentUser);
+
     }
 
   };
@@ -435,19 +509,42 @@ var decrypted = $crypto.decrypt(encrypted);
 // USERS
 // /////////
 
+//modified this because .success() was giving an error. ACW
+
   // Get Users
-  $scope.dbUsers = dbUsers.getUser();
-  
+  $scope.dbUsers = dbUsers.getUser().then(function(data){
+    $scope.dbUsers = data.val();
+
+    //Set a listener on the database to
+    //update the scope when values change.
+    //This may need to be refactored - ACW
+
+    firebase.database().ref('/users').limitToLast(10).on('value', function(data){
+
+      $scope.dbUsers = data.val();
+
+    });
+
+  });
+
   // Create Users
+
+  //set a container in the scope
   $scope.newUser = {};
 
+  //define the function
   $scope.createNewUser = function(){
     if($scope.newUser.fname == null || $scope.newUser.lname == null || $scope.newUser.pin == null){
       console.log("Empty Field!")
     }else{
 
+      //not sure we need this.
       var user = dbUsers.getUser()
-        /*what the heck is going on here?  Auto-increment for IDs?
+        /*
+
+        //What is going on here?  Auto-increment for IDs?
+        //Switched to unique Firebase-generated Keys ACW
+
         var idArray = [];
         console.log(user);
         for(var id in user){
@@ -456,13 +553,20 @@ var decrypted = $crypto.decrypt(encrypted);
 
         var lastUserId = idArray.sort(function(a,b){return a-b});
  */
+ //pass the data to the createUser function in dbUsers service,
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
-          //"id"    : lastUserId[lastUserId.length - 1] + 1,
+          //Switched to unique Firebase Keys ACW
+          "id"    : Date.now(),
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
+
+        //redirect to the admin page
+        //(hard reloading destroys the auth session)
         window.location = "#/admin";
+
+        //Let's display a message when creation is successful
 
     }//End Else Statement
   };//End Create New User
@@ -494,7 +598,7 @@ var decrypted = $crypto.decrypt(encrypted);
       "fname" : this.user.fname,
       "lname" : this.user.lname
     }
-
+    console.log(this.user)
     $('#updateUserID').val(this.user.id);
 
   };
@@ -504,9 +608,11 @@ var decrypted = $crypto.decrypt(encrypted);
 
     data.fname = data.fname.toUpperCase();
     data.lname = data.lname.toUpperCase();
+    //check if a pin was passed, because we get an error on NULL
+    if(data.pin){
     data.pin = $crypto.encrypt(data.pin.toString());
+    }
     data.id = Number($('#updateUserID').val());
-
 
     var id = $('#updateUserID').val();
 
@@ -519,38 +625,55 @@ var decrypted = $crypto.decrypt(encrypted);
 // ///////////
 
   // Get Stock
+
+  $scope.dbStock = dbStock.getStock()
+  //.then(function(data){
+    //$scope.dbStock = data.val();
+
+    //Set a listener on the database to
+    //update the scope when values change.
+    //This may need to be refactored - ACW
+
+    firebase.database().ref('/stock').limitToLast(1000).on('value', function(data){
+
+      $scope.dbStock = data.val();
+
+    });
+  //});
+/*
   var stock = dbStock.getStock()
     $scope.dbStock = stock;
     // console.log($scope.dbStock);
-
+*/
   // Create Stock
   // $scope.newStock = {};
 
   $scope.createNewStock = function(){
     if($scope.newStock.name == null || $scope.newStock.type == null){
+
+      //probably need some better error handling here - see issue #5
       console.log("Empty field!")
+
     }else{
 
       //Retrieve Stock Data
-      dbStock.getStock().success(function(data){
-
-        //Get Last Stock ID
-        var idStockArray = [];
-        for(var id in data){
-          idStockArray.push(data[id].id);
-        }
-        var lastStockId = idStockArray.sort(function(a,b){return a-b});
 
         $scope.newStock = {
           "name" : $scope.newStock.name,
           "type" : $scope.newStock.type,
-          "notes" : $scope.newStock.notes,
-          "id"   : lastStockId[lastStockId.length - 1] + 1
+          "notes": $scope.newStock.notes,
+
+          //changed to timestamps (milliseconds since 1970 or something,
+          //so it's unique, for our purposes) ACW
+          //"id"   : lastStockId[lastStockId.length - 1] + 1
+          "id"   : Date.now()
 
         }
+
         dbStock.createStock($scope.newStock);
-        window.location.reload();
-      })//End of Creation
+
+        window.location = "#/admin";
+      //})//End of Creation
 
     }//End of Else Statement
   };//End of Create New Stock
@@ -600,16 +723,15 @@ var checkedItemUserName;
 
 // Get Checked Items
 var checkedItems = dbCheckedItems.getCheckedItems();
+console.log(checkedItems);
   $scope.dbCheckedItems = checkedItems;
-  // console.log($scope.dbCheckedItems);
+  console.log($scope.dbCheckedItems);
 
   // /////////////////
   // Check Item Status
   // /////////////////
 
   $scope.itemStatus = function(itemName){
-
-
 
     var checkedItemArray = [];
 
@@ -652,9 +774,6 @@ var checkedItems = dbCheckedItems.getCheckedItems();
 
   };
 
-
-
-
   // View Item
   $scope.itemClick = function(){
     $('#viewItem').css("display","block");
@@ -693,7 +812,7 @@ var checkedItems = dbCheckedItems.getCheckedItems();
     }else if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
       // If the password matches, a successful checkout will occur
 
-      // Create Item ID
+      /* Create Item ID
       dbCheckedItems.getCheckedItems().success(function(checkedItemData){
 
         var idArray = [0];
@@ -708,17 +827,17 @@ var checkedItems = dbCheckedItems.getCheckedItems();
         }
         var sortId = idArray.sort(function(a,b){return a-b});
         var lastId = idArray[idArray.length - 1];
-
+        */
         $scope.checkedOutItem = {
           "name" : $('#title').html(),
           "user" : $scope.checkedOutItem.user,
-          "id"   : lastId + 1
+          "id"   : Date.now()
         }
 
         dbCheckedItems.checkOutItem($scope.checkedOutItem);
         window.location.reload();
 
-      });
+    //  });
 
 
     }else if(!$scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
@@ -823,14 +942,18 @@ var checkedItems = dbCheckedItems.getCheckedItems();
 
   // Compare Username and Pin
   $scope.checkPin = function(user, pin){
-    $scope.dbUsers;
 
-    var users = dbUsers.getUser()
-      $scope.dbUsers = users;
+  $scope.dbUsers;
+
+    dbUsers.getUser().then(function(data){
+        $scope.dbUsers = data.val();
+    })
+
     //End Get User Function
-
+console.log($scope.dbUsers);
     for(var userPin in $scope.dbUsers){
         // Match Names
+
       if($scope.dbUsers[userPin].fname + ' ' + $scope.dbUsers[userPin].lname == user){
         // Check Pin
         if(pin == $crypto.decrypt($scope.dbUsers[userPin].pin)){
