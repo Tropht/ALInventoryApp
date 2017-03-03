@@ -35,7 +35,7 @@ inventoryApp.config(function($stateProvider, $urlRouterProvider){
 
     onEnter: function(){
       inventoryApp.controller('inventoryCtrl', '$scope', function($scope){
-        console.log($scope.hello);
+        // console.log($scope.hello);
       })
     }
 
@@ -105,7 +105,7 @@ inventoryApp.controller('loginController', function($scope, authService){
 })
 
 ///just a test ACW
-console.log(firebase.database().ref('/users').limitToLast(10))
+// console.log(firebase.database().ref('/users').limitToLast(10))
 
 ///////////////////////
 // Service for Users
@@ -118,7 +118,7 @@ inventoryApp.service('dbUsers', function(){
   this.getUser = function(){
     return this.database.ref('/users').limitToLast(100).once('value', function(data){
 
-      console.log(data.val());
+      // console.log(data.val());
       return data.val();
 
     });
@@ -233,7 +233,7 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
     firebase.database().ref('/stock').limitToLast(1000).once('value', function(data){
 
   $timeout(function(){
-      console.log(data.val());
+      // console.log(data.val());
       return data.val();
       $scope.dbStock = data.val();
       });
@@ -312,7 +312,7 @@ inventoryApp.service('dbCheckedItems', function(){
   // Get Checked Items From Database
   this.getCheckedItems = function(){
     firebase.database().ref('/checkedItems').limitToLast(1000).once('value', function(data){
-      console.log(data.val());
+      // console.log(data.val());
       return data.val();
 
     });
@@ -669,11 +669,6 @@ var stockID;
 var checkedItemID;
 var checkedItemUserName;
 
-// Get Checked Items
-var checkedItems = dbCheckedItems.getCheckedItems();
-console.log(checkedItems);
-  $scope.dbCheckedItems = checkedItems;
-  console.log($scope.dbCheckedItems);
 
   // /////////////////
   // Check Item Status
@@ -688,10 +683,11 @@ console.log(checkedItems);
         // match on itemList name
         if(itemName == itemList[item].name){
           // isCheckedOut default is false(availabe)
-          if(itemList[item].isCheckedOut){
-              $('#itemStatus').html("Available");
-              $('#checkOutForm').css('display','block');
-              $('#returnForm').css('display','none');
+
+          if(!itemList[item].isCheckedOut){
+            $('#itemStatus').html("Available");
+            $('#checkOutForm').css('display','block');
+            $('#returnForm').css('display','none');
           }else{
             $('#itemStatus').html("Unavailable");
             $('#checkOutForm').css('display','none');
@@ -736,45 +732,59 @@ console.log(checkedItems);
 
   $scope.checkOut = function(){
 
-    if($scope.checkedOutItem.user == null || $scope.checkOutPin == null){
-      console.log("Empty Field!");
-    }else if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-      // If the password matches, a successful checkout will occur
+    console.log(stockID);
 
-      /* Create Item ID
-      dbCheckedItems.getCheckedItems().success(function(checkedItemData){
+    if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
+      console.log("Matches");
 
-        var idArray = [0];
-        for(var id in checkedItemData){
-          if(!checkedItemData){
-            console.log("Nothing there!");
-            idArray = [0];
-          }else{
-            console.log("There's stuff here");
-            idArray.push(checkedItemData[id].id);
-          }
-        }
-        var sortId = idArray.sort(function(a,b){return a-b});
-        var lastId = idArray[idArray.length - 1];
-        */
-        $scope.checkedOutItem = {
-          "name" : $('#title').html(),
-          "user" : $scope.checkedOutItem.user,
-          "id"   : Date.now()
-        }
-
-        dbCheckedItems.checkOutItem($scope.checkedOutItem);
-        window.location.reload();
-
-    //  });
-
-
-    }else if(!$scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-      // If password doesn't match, they will be prompted to try again
-
-      console.log("Password didn't Match, try again")
-
+      var data = {
+        'currentUser' : $scope.checkedOutItem.user,
+        'isCheckedOut' : true
+      }
+        dbStock.updateStock(stockID, data);
+    }else{
+      console.log("Does not match");
     }
+
+    // if($scope.checkedOutItem.user == null || $scope.checkOutPin == null){
+    //   console.log("Empty Field!");
+    // }else if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
+    //   // If the password matches, a successful checkout will occur
+    //
+    //   /* Create Item ID
+    //   dbCheckedItems.getCheckedItems().success(function(checkedItemData){
+    //
+    //     var idArray = [0];
+    //     for(var id in checkedItemData){
+    //       if(!checkedItemData){
+    //         console.log("Nothing there!");
+    //         idArray = [0];
+    //       }else{
+    //         console.log("There's stuff here");
+    //         idArray.push(checkedItemData[id].id);
+    //       }
+    //     }
+    //     var sortId = idArray.sort(function(a,b){return a-b});
+    //     var lastId = idArray[idArray.length - 1];
+    //     */
+    //     $scope.checkedOutItem = {
+    //       "name" : $('#title').html(),
+    //       "user" : $scope.checkedOutItem.user,
+    //       "id"   : Date.now()
+    //     }
+    //
+    //     dbCheckedItems.checkOutItem($scope.checkedOutItem);
+    //     window.location.reload();
+    //
+    // //  });
+    //
+    //
+    // }else if(!$scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
+    //   // If password doesn't match, they will be prompted to try again
+    //
+    //   console.log("Password didn't Match, try again")
+    //
+    // }
 
   };
 
@@ -879,7 +889,7 @@ console.log(checkedItems);
     })
 
     //End Get User Function
-console.log($scope.dbUsers);
+// console.log($scope.dbUsers);
     for(var userPin in $scope.dbUsers){
         // Match Names
 
