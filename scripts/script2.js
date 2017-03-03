@@ -282,14 +282,19 @@ inventoryApp.service('dbUsers',['$http', function ($http) {
 ////////////////////
 // Service for Stock
 ////////////////////
-inventoryApp.service('dbStock', function(){
+inventoryApp.service('dbStock', ['$timeout', function($timeout){
   // Get Stock From Database
   this.database = firebase.database();
 
   this.getStock = function(){
+
     firebase.database().ref('/stock').limitToLast(1000).once('value', function(data){
+
+  $timeout(function(){
       console.log(data.val());
       return data.val();
+      $scope.dbStock = data.val();
+      });
     });
   }
 
@@ -355,7 +360,7 @@ inventoryApp.service('dbStock', function(){
 
   }//End Update Stock
 
-});
+}]);
 
 ///////////////////////////////
 // Service for Checked Items
@@ -465,7 +470,7 @@ jQuery('#signOutButton').on('click', function(){
 });
 
 // Put into Controller to use on page
-inventoryApp.controller('inventoryCtrl', ['$scope', '$rootScope', 'dbUsers', 'dbStock', 'dbCheckedItems', '$crypto', 'authService', function($scope, $rootScope, dbUsers, dbStock, dbCheckedItems, $crypto, authService){
+inventoryApp.controller('inventoryCtrl', ['$scope', '$rootScope', 'dbUsers', 'dbStock', 'dbCheckedItems', '$crypto', 'authService', '$timeout', function($scope, $rootScope, dbUsers, dbStock, dbCheckedItems, $crypto, authService, $timeout){
 
 authService.auth.onAuthStateChanged(function(user){
   if(user){
@@ -626,7 +631,8 @@ var decrypted = $crypto.decrypt(encrypted);
 
   // Get Stock
 
-  $scope.dbStock = dbStock.getStock()
+  $scope.dbStock = dbStock.getStock();
+
   //.then(function(data){
     //$scope.dbStock = data.val();
 
