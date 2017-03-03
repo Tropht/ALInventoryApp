@@ -680,47 +680,28 @@ console.log(checkedItems);
   // /////////////////
 
   $scope.itemStatus = function(itemName){
+    firebase.database().ref('/stock').on('value',function(data){
+      var itemList = data.val();//Set data to var itemList
 
-    var checkedItemArray = [];
-
-    // Push Items from Object To Array
-    for(var item in $scope.dbCheckedItems){
-      checkedItemArray.push($scope.dbCheckedItems[item]);
-    }
-
-
-    if(checkedItemArray.length == 0){
-      $('#itemStatus').html("Available");
-      $('#checkOutForm').css('display','block');
-      $('#returnForm').css('display','none');
-    }else {
-      //Check the Checked Items List
-      for(var i = 0; i < checkedItemArray.length; i++){
-        if(checkedItemArray[i].name == itemName){
-          // Check the Stock List
-          for(var item in $scope.dbStock){
-            if(checkedItemArray[i].name == $scope.dbStock[item].name){
-              $('#itemStatus').html("Unavailable");
-              $('#checkOutForm').css('display','none');
-              $('#returnForm').css('display','block');
-
-              //Set Global Checked Items
-              checkedItemID = checkedItemArray[i].id;
-              checkedItemUserName = checkedItemArray[i].user;
-
-              $scope.checkedUser = checkedItemUserName;
-            }
+      // Loop through itemList data
+      for(item in itemList){
+        // match on itemList name
+        if(itemName == itemList[item].name){
+          // isCheckedOut default is false(availabe)
+          if(itemList[item].isCheckedOut){
+              $('#itemStatus').html("Available");
+              $('#checkOutForm').css('display','block');
+              $('#returnForm').css('display','none');
+          }else{
+            $('#itemStatus').html("Unavailable");
+            $('#checkOutForm').css('display','none');
+            $('#returnForm').css('display','block');
           }
-          break;
-        }else{
-          $('#itemStatus').html("Available");
-          $('#checkOutForm').css('display','block');
-          $('#returnForm').css('display','none');
-        }
-      }//End Check Checked Items List
-    }//End Else Statement For Check Item Status
+        }//End of name match if statement.
+      }//End of itemList for loop
 
-  };
+    });//End of getting data
+  };//End of Item Status
 
   // View Item
   $scope.itemClick = function(){
