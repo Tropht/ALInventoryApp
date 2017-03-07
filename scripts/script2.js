@@ -487,20 +487,8 @@ var decrypted = $crypto.decrypt(encrypted);
 
       //not sure we need this.
       var user = dbUsers.getUser()
-        /*
 
-        //What is going on here?  Auto-increment for IDs?
-        //Switched to unique Firebase-generated Keys ACW
-
-        var idArray = [];
-        console.log(user);
-        for(var id in user){
-          idArray.push(user[id].id);
-        }
-
-        var lastUserId = idArray.sort(function(a,b){return a-b});
- */
- //pass the data to the createUser function in dbUsers service,
+     //pass the data to the createUser function in dbUsers service,
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
@@ -509,6 +497,11 @@ var decrypted = $crypto.decrypt(encrypted);
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
 
+        // Clear New User form
+        $scope.newUser.fname = "";
+        $scope.newUser.lname = "";
+        $scope.newUser.pin = "";
+        $('#createUser').toggle();
         //redirect to the admin page
         //(hard reloading destroys the auth session)
         window.location = "#/admin";
@@ -588,13 +581,8 @@ var decrypted = $crypto.decrypt(encrypted);
 
     });
   //});
-/*
-  var stock = dbStock.getStock()
-    $scope.dbStock = stock;
-    // console.log($scope.dbStock);
-*/
+
   // Create Stock
-  // $scope.newStock = {};
 
   $scope.createNewStock = function(){
     if($scope.newStock.name == null || $scope.newStock.type == null){
@@ -619,6 +607,12 @@ var decrypted = $crypto.decrypt(encrypted);
         }
 
         dbStock.createStock($scope.newStock);
+
+        $scope.newStock.name = "";
+        $scope.newStock.type = "";
+        $scope.newStock.notes = "";
+
+        $('#createStock').toggle();
 
         window.location = "#/admin";
       //})//End of Creation
@@ -688,6 +682,7 @@ var checkedItemUserName;
             $('#itemStatus').html("Available");
             $('#checkOutForm').css('display','block');
             $('#returnForm').css('display','none');
+
           }else{
             $('#itemStatus').html("Unavailable");
             $('#checkOutForm').css('display','none');
@@ -733,9 +728,6 @@ var checkedItemUserName;
 
   $scope.checkOut = function(){
 
-    console.log(stockID);
-
-
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
       console.log("Matches");
 
@@ -744,6 +736,10 @@ var checkedItemUserName;
         'isCheckedOut' : true
       }
         dbStock.updateStock(stockID, data);
+
+      // Reset Form
+      $scope.checkedOutItem.user = "";
+      $scope.checkOutPin = "";
     }else{
       console.log("Does not match");
     }
