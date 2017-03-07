@@ -129,7 +129,9 @@ inventoryApp.service('dbUsers', function(){
 
   this.createUser = function(data){
 
-    return this.database.ref('/users').push(data);
+    return this.database.ref('/users').push(data, function(error){
+      console.log(error.message);
+    });
 
   }
 
@@ -174,6 +176,8 @@ inventoryApp.service('dbUsers', function(){
   }//End Delete User
 
   this.updateUser = function(id, data){
+    //console.log("update");
+    //console.log(data);
     firebase.database().ref('/users').once('value', function(result){
       var userData = result.val();
 
@@ -208,7 +212,16 @@ inventoryApp.service('dbUsers', function(){
         }//End If Statement
       }//End For Loop
     };
-  });
+  }, function(error){
+
+    if(error){
+
+      $('#updateUserMessage').removeClass('alert-success');
+      $('#updateUserMessage').addClass('alert-danger');
+      $('#updateUserMessage').html(error.message)
+
+    }}
+  );
   }//End Update User
 
 })
@@ -546,11 +559,7 @@ var decrypted = $crypto.decrypt(encrypted);
 
     }else{
 
-      //not sure we need this.
-      var user = dbUsers.getUser()
-
-
-     //pass the data to the createUser function in dbUsers service,
+        //pass the data to the createUser function in dbUsers service,
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
@@ -558,11 +567,6 @@ var decrypted = $crypto.decrypt(encrypted);
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
 
-        // Clear New User form
-        $scope.newUser.fname = "";
-        $scope.newUser.lname = "";
-        $scope.newUser.pin = "";
-        $('#createUser').toggle();
         //redirect to the admin page
         //(hard reloading destroys the auth session)
         window.location = "#/admin";
@@ -604,8 +608,8 @@ var decrypted = $crypto.decrypt(encrypted);
       "fname" : this.user.fname,
       "lname" : this.user.lname
     }
-    console.log(this.user)
-    $('#updateUserID').val(this.user.id);
+    //console.log(this.user.id);
+    $scope.updatedUser.id = this.user.id;
 
   };
 
@@ -647,8 +651,13 @@ var decrypted = $crypto.decrypt(encrypted);
 
     });
   //});
-
+/*
+  var stock = dbStock.getStock()
+    $scope.dbStock = stock;
+    // console.log($scope.dbStock);
+*/
   // Create Stock
+  // $scope.newStock = {};
 
   $scope.createNewStock = function(){
     if($scope.newStock.name == null || $scope.newStock.type == null){
@@ -673,12 +682,6 @@ var decrypted = $crypto.decrypt(encrypted);
         }
 
         dbStock.createStock($scope.newStock);
-
-        $scope.newStock.name = "";
-        $scope.newStock.type = "";
-        $scope.newStock.notes = "";
-
-        $('#createStock').toggle();
 
         window.location = "#/admin";
       //})//End of Creation
@@ -751,7 +754,6 @@ var checkedItemUserName;
             $('#itemStatus').html("Available");
             $('#checkOutForm').css('display','block');
             $('#returnForm').css('display','none');
-
           }else{
             $('#itemStatus').html("Unavailable");
             $('#checkOutForm').css('display','none');
@@ -796,7 +798,7 @@ var checkedItemUserName;
   // Check Out Item
 
   $scope.checkOut = function(){
-
+    //console.log(stockID);
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
       //console.log("Matches");
       var data = {
@@ -804,10 +806,6 @@ var checkedItemUserName;
         'isCheckedOut' : true
       }
         dbStock.updateStock(stockID, data);
-
-      // Reset Form
-      $scope.checkedOutItem.user = "";
-      $scope.checkOutPin = "";
     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
@@ -936,7 +934,6 @@ var checkedItemUserName;
 
 
 }]);//End of controller
-
 
 // jquery
 $(document).ready(function(){
