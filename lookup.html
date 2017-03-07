@@ -1,3 +1,19 @@
+<style>
+.msg{
+
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 10px;
+
+}
+
+
+</style>
 <div class="container" ng-controller="inventoryCtrl">
 
   <section id="lookupSection">
@@ -43,6 +59,8 @@
         </aside>
 
         <!-- Check Out Form -->
+        <div id="checkoutMsg" class="msg">
+        </div>
         <form id="checkOutForm">
 
           <aside class="userSelect">
@@ -71,7 +89,7 @@
         <!-- Return Form -->
         <form id="returnForm">
 
-          <span>This item is checkout by:</span> <input type="input" class="currentUser" ng-model="checkedUser" readonly>
+          <span>This item is checked out by:</span> <input type="input" class="currentUser" ng-model="checkedUser" readonly>
 
           <aside class="userSelect">
             <i class="fa fa-user fa-2x" aria-hidden="true"></i>

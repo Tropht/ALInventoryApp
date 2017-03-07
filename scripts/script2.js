@@ -68,9 +68,10 @@ inventoryApp.service('authService', function(){
     this.auth.signInWithEmailAndPassword(email, pass).then(function(user){
 
       if(user){
-        jQuery('#loginError').addClass("alert alert-danger").html("Success!");
-        //jQuery('#loginModal').modal('hide');
+
+        jQuery('#loginError').addClass("msg alert-success").html("Success!");
         window.location = "#/admin";
+
       }
 
     }).catch(function(error){
@@ -79,11 +80,12 @@ inventoryApp.service('authService', function(){
       var errorMessage = error.message;
       console.log(errorCode);
       console.log(errorMessage);
-      jQuery('#loginError').addClass("alert alert-danger").html(errorMessage);
+      jQuery('#loginError').addClass("msg alert-danger").html(errorMessage);
 
     });
+
     var user = this.auth.currentUser;
-    //console.log(user);
+
   }///close this.login
 
 });
@@ -104,9 +106,6 @@ inventoryApp.controller('loginController', function($scope, authService){
   }
 })
 
-///just a test ACW
-// console.log(firebase.database().ref('/users').limitToLast(10))
-
 ///////////////////////
 // Service for Users
 //////////////////////
@@ -121,12 +120,17 @@ inventoryApp.service('dbUsers', function(){
       // console.log(data.val());
       return data.val();
 
-    });
+    }, function(error){
+      if(error){
+        console.log(error.message);
+      }
+    }); //close error handler and .once params
   }
 
   this.createUser = function(data){
-    //console.log(data);
+
     return this.database.ref('/users').push(data);
+
   }
 
   this.deleteUser = function(id){
@@ -146,13 +150,29 @@ inventoryApp.service('dbUsers', function(){
         if(id == obj[prop]){
 
           firebase.database().ref('/users/' + user).remove(function(error){
-            console.log(error);
-          });
+
+              if(!error){
+
+                $('#updateUserMessage').removeClass('alert-danger');
+                $('#updateUserMessage').addClass('alert-success')
+                $('#updateUserMessage').html('Success!');
+
+                //Close Pop Up here, if we want
+
+              }else{
+
+                $('#updateUserMessage').removeClass('alert-danger');
+                $('#updateUserMessage').addClass('alert-success')
+                $('#updateUserMessage').html(error.message);
+
+              }
+            });
         }//End If Statement
       }
       }//End For Loop
     });
   }//End Delete User
+
   this.updateUser = function(id, data){
     firebase.database().ref('/users').once('value', function(result){
       var userData = result.val();
@@ -166,7 +186,24 @@ inventoryApp.service('dbUsers', function(){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/users/' + user).update(data);
+          firebase.database().ref('/users/' + user).update(data, function(error){
+
+            if(!error){
+
+              $('#updateUserMessage').removeClass('alert-danger');
+              $('#updateUserMessage').addClass('alert-success')
+              $('#updateUserMessage').html('Success!');
+
+              //Close Pop Up here, if we want
+
+            }else{
+
+              $('#updateUserMessage').removeClass('alert-danger');
+              $('#updateUserMessage').addClass('alert-success')
+              $('#updateUserMessage').html(error.message);
+
+            }
+          });
 
         }//End If Statement
       }//End For Loop
@@ -175,51 +212,6 @@ inventoryApp.service('dbUsers', function(){
   }//End Update User
 
 })
-/*
-inventoryApp.service('dbUsers',['$http', function ($http) {
-
-  // Get Users From Database
-  this.getUser = function(){
-    return $http.get('https://inventoryapp-bc585.firebaseio.com/users');
-  }
-  this.createUser = function(data){
-    return $http.post('https://inventoryapp-bc585.firebaseio.com/users', data);
-  }
-  this.deleteUser = function(id){
-    // Retrieve User Data
-    $http.get('https://inventoryapp-bc585.firebaseio.com/users').success(function(userData){
-
-      // Find user in User Object
-      for(var user in userData){
-        // Match User with ID
-        if(id == userData[user].id){
-
-          return $http.delete('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json').success(function(){
-            window.location.reload();
-          });
-
-        }//End If Statement
-      }//End For Loop
-    });
-  }//End Delete User
-  this.updateUser = function(id, data){
-
-    $http.get('https://inventoryapp-bc585.firebaseio.com/users.json').success(function(userData){
-
-      // Find user in User Objects
-      for(var user in userData){
-        // Match User with ID
-        if(id == userData[user].id){
-          return $http.put('https://inventoryapp-bc585.firebaseio.com/users/' + user + '.json', data).success(function(){
-            window.location.reload();
-          });
-        }//End If Statement
-      }//End For Loop
-    });
-  }//End Update User
-
-}]);
-*/
 
 ////////////////////
 // Service for Stock
@@ -231,11 +223,12 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
   this.getStock = function(){
 
     firebase.database().ref('/stock').limitToLast(1000).once('value', function(data){
-
+      //needed to wrap in this to make sure scope updated on first page load.
   $timeout(function(){
-      // console.log(data.val());
+
       return data.val();
       $scope.dbStock = data.val();
+
       });
     });
   }
@@ -243,7 +236,24 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
   this.createStock = function(data){
 
     var pushKey = this.database.ref('/stock').push().key
-    this.database.ref('/stock/' + pushKey).update(data);
+    this.database.ref('/stock/' + pushKey).update(data, function(error){
+
+        if(!error){
+
+          $('#createStockMessage').removeClass('alert-danger');
+          $('#createStockMessage').addClass('alert-success')
+          $('#createStockMessage').html('Success!');
+
+          //Close Pop Up here, if we want
+
+        }else{
+
+          $('#createStockMessage').removeClass('alert-danger');
+          $('#createStockMessage').addClass('alert-success')
+          $('#createStockMessage').html(error.message);
+
+        }
+      });
 
   }
 
@@ -263,7 +273,21 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
         if(id == obj[prop]){
 
           firebase.database().ref('/stock/' + item).remove(function(error){
-            console.log(error);
+
+            //callback
+            if(!error){
+
+              $('#updateStockMessage').removeClass('alert-danger');
+              $('#updateStockMessage').addClass('alert-success');
+              $('#updateStockMessage').html('Success!');
+
+            }else{
+
+              $('#updateStockMessage').removeClass('alert-success');
+              $('#updateStockMessage').addClass('alert-danger');
+              $('#updateStockMessage').html(error.message);
+
+            }
 
               });
 
@@ -289,16 +313,49 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/stock/' + item).update(data);
+          firebase.database().ref('/stock/' + item).update(data, function(error){
+
+            //callback
+            if(!error){
+
+              $('#checkoutMsg').removeClass('alert-danger');
+              $('#checkoutMsg').addClass('alert-success');
+              $('#checkoutMsg').html('Success!');
+              //we don't know which modal this came from, so we need to run both.
+              $('#updateStockMessage').removeClass('alert-danger');
+              $('#updateStockMessage').addClass('alert-success');
+              $('#updateStockMessage').html('Success!');
+
+            }else{
+
+              $('#checkoutMsg').removeClass('alert-success');
+              $('#checkoutMsg').addClass('alert-danger');
+              $('#checkoutMsg').html(error.message);
+              //we don't know which modal this came from, so we need to run both.
+              $('#updateStockMessage').removeClass('alert-success');
+              $('#updateStockMessage').addClass('alert-danger');
+              $('#updateStockMessage').html(error.message);
+
+            }
+
+          });
 
           //add success notification here ACW
-
-          $('#updateStockMsg').html('Success!')
 
           }//End If Statement
         }//End For Loop 1
       }//End For Loop 2
-    })//End Find Item
+    }, function(error){
+
+      if(error){
+
+        $('#checkoutMsg').removeClass('alert-success');
+        $('#checkoutMsg').addClass('alert-danger');
+        $('#checkoutMsg').html(error.message)
+
+      }
+
+    })//End .once function
 
   }//End Update Stock
 
@@ -482,17 +539,21 @@ var decrypted = $crypto.decrypt(encrypted);
   //define the function
   $scope.createNewUser = function(){
     if($scope.newUser.fname == null || $scope.newUser.lname == null || $scope.newUser.pin == null){
-      console.log("Empty Field!")
+
+      $('#createUserMessage').removeClass('alert-success');
+      $('#createUserMessage').addClass('alert-danger');
+      $('#createUserMessage').html('One or more fields is blank.');
+
     }else{
 
       //not sure we need this.
       var user = dbUsers.getUser()
 
+
      //pass the data to the createUser function in dbUsers service,
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
-          //Switched to unique Firebase Keys ACW
           "id"    : Date.now(),
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
@@ -506,7 +567,9 @@ var decrypted = $crypto.decrypt(encrypted);
         //(hard reloading destroys the auth session)
         window.location = "#/admin";
 
-        //Let's display a message when creation is successful
+        $('#createUserMessage').removeClass('alert-danger');
+        $('#createUserMessage').addClass('alert-success')
+        $('#createUserMessage').html('Success!');
 
     }//End Else Statement
   };//End Create New User
@@ -528,6 +591,9 @@ var decrypted = $crypto.decrypt(encrypted);
   // Close Edit User Window
   $scope.closeEditUser = function(){
     $("#editUser").css("display","none");
+    $('#updateUserMessage').html('');
+    $('#updateUserMessage').removeClass('alert-danger alert-success');
+
   };
 
   // Pull In User Data
@@ -632,6 +698,9 @@ var decrypted = $crypto.decrypt(encrypted);
   // Edit Stock
   $scope.closeEditStock = function(){
     $("#editStock").css("display","none");
+    $('#updateStockMessage').html('');
+    $('#updateStockMessage').removeClass('alert-danger alert-success');
+
   };
   $scope.editStock = function(){
     $("#editStock").css("display","block");
@@ -729,8 +798,7 @@ var checkedItemUserName;
   $scope.checkOut = function(){
 
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-      console.log("Matches");
-
+      //console.log("Matches");
       var data = {
         'currentUser' : $scope.checkedOutItem.user,
         'isCheckedOut' : true
@@ -741,7 +809,10 @@ var checkedItemUserName;
       $scope.checkedOutItem.user = "";
       $scope.checkOutPin = "";
     }else{
-      console.log("Does not match");
+
+        $('#checkoutMsg').removeClass('alert-success');
+        $('#checkoutMsg').addClass('alert-danger');
+        $('#checkoutMsg').html('Incorrect PIN!');
     }
 
   };
@@ -752,13 +823,10 @@ var checkedItemUserName;
 
   $scope.returnItem = function(){
 
-
-    console.log($scope.checkedUser);
-
-
+    //console.log($scope.checkedUser);
 
     if($scope.checkPin($scope.checkedUser, $scope.returnPin)){
-      console.log("Matches");
+      //console.log("Matches");
 
       var data = {
         'currentUser' : null,
@@ -767,7 +835,10 @@ var checkedItemUserName;
       }
         dbStock.updateStock(stockID, data);
     }else{
-      console.log("Does not match");
+
+        $('#checkoutMsg').removeClass('alert-success');
+        $('#checkoutMsg').addClass('alert-danger');
+        $('#checkoutMsg').html('Incorrect PIN!');
     }
 
   };
@@ -788,6 +859,9 @@ var checkedItemUserName;
   }
   $scope.openCreateStock = function(){
     $('#createStock').toggle();
+    $('#createStockMessage').html('');
+    $('#createStockMessage').removeClass('alert-danger alert-success');
+
   }
   $scope.selectUsers = function(){
     $('#viewStockButton').toggle();
@@ -796,7 +870,11 @@ var checkedItemUserName;
     $('#createUser').css('display','none');
   }
   $scope.openCreateUser = function(){
+
     $('#createUser').toggle();
+    $('#createUserMessage').html('');
+    $('#createUserMessage').removeClass('alert-danger alert-success');
+
   }
 
   // Reveal Buttons
