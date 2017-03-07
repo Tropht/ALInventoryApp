@@ -128,7 +128,7 @@ inventoryApp.service('dbUsers', function(){
   }
 
   this.createUser = function(data){
-    
+
     return this.database.ref('/users').push(data);
 
   }
@@ -150,8 +150,23 @@ inventoryApp.service('dbUsers', function(){
         if(id == obj[prop]){
 
           firebase.database().ref('/users/' + user).remove(function(error){
-            console.log(error);
-          });
+
+              if(!error){
+
+                $('#updateUserMessage').removeClass('alert-danger');
+                $('#updateUserMessage').addClass('alert-success')
+                $('#updateUserMessage').html('Success!');
+
+                //Close Pop Up here, if we want
+
+              }else{
+
+                $('#updateUserMessage').removeClass('alert-danger');
+                $('#updateUserMessage').addClass('alert-success')
+                $('#updateUserMessage').html(error.message);
+
+              }
+            });
         }//End If Statement
       }
       }//End For Loop
@@ -171,7 +186,24 @@ inventoryApp.service('dbUsers', function(){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/users/' + user).update(data);
+          firebase.database().ref('/users/' + user).update(data, function(error){
+
+            if(!error){
+
+              $('#updateUserMessage').removeClass('alert-danger');
+              $('#updateUserMessage').addClass('alert-success')
+              $('#updateUserMessage').html('Success!');
+
+              //Close Pop Up here, if we want
+
+            }else{
+
+              $('#updateUserMessage').removeClass('alert-danger');
+              $('#updateUserMessage').addClass('alert-success')
+              $('#updateUserMessage').html(error.message);
+
+            }
+          });
 
         }//End If Statement
       }//End For Loop
@@ -191,11 +223,12 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
   this.getStock = function(){
 
     firebase.database().ref('/stock').limitToLast(1000).once('value', function(data){
-
+      //needed to wrap in this to make sure scope updated on first page load.
   $timeout(function(){
-      // console.log(data.val());
+
       return data.val();
       $scope.dbStock = data.val();
+
       });
     });
   }
@@ -203,7 +236,24 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
   this.createStock = function(data){
 
     var pushKey = this.database.ref('/stock').push().key
-    this.database.ref('/stock/' + pushKey).update(data);
+    this.database.ref('/stock/' + pushKey).update(data, function(error){
+
+        if(!error){
+
+          $('#createStockMessage').removeClass('alert-danger');
+          $('#createStockMessage').addClass('alert-success')
+          $('#createStockMessage').html('Success!');
+
+          //Close Pop Up here, if we want
+
+        }else{
+
+          $('#createStockMessage').removeClass('alert-danger');
+          $('#createStockMessage').addClass('alert-success')
+          $('#createStockMessage').html(error.message);
+
+        }
+      });
 
   }
 
@@ -223,7 +273,21 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
         if(id == obj[prop]){
 
           firebase.database().ref('/stock/' + item).remove(function(error){
-            console.log(error);
+
+            //callback
+            if(!error){
+
+              $('#updateStockMessage').removeClass('alert-danger');
+              $('#updateStockMessage').addClass('alert-success');
+              $('#updateStockMessage').html('Success!');
+
+            }else{
+
+              $('#updateStockMessage').removeClass('alert-success');
+              $('#updateStockMessage').addClass('alert-danger');
+              $('#updateStockMessage').html(error.message);
+
+            }
 
               });
 
@@ -257,13 +321,20 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
               $('#checkoutMsg').removeClass('alert-danger');
               $('#checkoutMsg').addClass('alert-success');
               $('#checkoutMsg').html('Success!');
-
+              //we don't know which modal this came from, so we need to run both.
+              $('#updateStockMessage').removeClass('alert-danger');
+              $('#updateStockMessage').addClass('alert-success');
+              $('#updateStockMessage').html('Success!');
 
             }else{
 
               $('#checkoutMsg').removeClass('alert-success');
               $('#checkoutMsg').addClass('alert-danger');
-              $('#checkoutMsg').html(error.message)
+              $('#checkoutMsg').html(error.message);
+              //we don't know which modal this came from, so we need to run both.
+              $('#updateStockMessage').removeClass('alert-success');
+              $('#updateStockMessage').addClass('alert-danger');
+              $('#updateStockMessage').html(error.message);
 
             }
 
@@ -468,12 +539,16 @@ var decrypted = $crypto.decrypt(encrypted);
   //define the function
   $scope.createNewUser = function(){
     if($scope.newUser.fname == null || $scope.newUser.lname == null || $scope.newUser.pin == null){
-      console.log("Empty Field!")
-    }else{
 
+      $('#createUserMessage').removeClass('alert-success');
+      $('#createUserMessage').addClass('alert-danger');
+      $('#createUserMessage').html('One or more fields is blank.');
+
+    }else{
+/*
       //not sure we need this.
       var user = dbUsers.getUser()
-        /*
+
 
         //What is going on here?  Auto-increment for IDs?
         //Switched to unique Firebase-generated Keys ACW
@@ -490,7 +565,6 @@ var decrypted = $crypto.decrypt(encrypted);
         dbUsers.createUser($scope.newUser = {
           "fname" : $scope.newUser.fname.toUpperCase(),
           "lname" : $scope.newUser.lname.toUpperCase(),
-          //Switched to unique Firebase Keys ACW
           "id"    : Date.now(),
           "pin" : $crypto.encrypt($scope.newUser.pin.toString())
         });
@@ -499,7 +573,9 @@ var decrypted = $crypto.decrypt(encrypted);
         //(hard reloading destroys the auth session)
         window.location = "#/admin";
 
-        //Let's display a message when creation is successful
+        $('#createUserMessage').removeClass('alert-danger');
+        $('#createUserMessage').addClass('alert-success')
+        $('#createUserMessage').html('Success!');
 
     }//End Else Statement
   };//End Create New User
@@ -521,6 +597,9 @@ var decrypted = $crypto.decrypt(encrypted);
   // Close Edit User Window
   $scope.closeEditUser = function(){
     $("#editUser").css("display","none");
+    $('#updateUserMessage').html('');
+    $('#updateUserMessage').removeClass('alert-danger alert-success');
+
   };
 
   // Pull In User Data
@@ -624,6 +703,9 @@ var decrypted = $crypto.decrypt(encrypted);
   // Edit Stock
   $scope.closeEditStock = function(){
     $("#editStock").css("display","none");
+    $('#updateStockMessage').html('');
+    $('#updateStockMessage').removeClass('alert-danger alert-success');
+
   };
   $scope.editStock = function(){
     $("#editStock").css("display","block");
@@ -718,14 +800,9 @@ var checkedItemUserName;
   // Check Out Item
 
   $scope.checkOut = function(){
-
     //console.log(stockID);
-
-
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-
       //console.log("Matches");
-
       var data = {
         'currentUser' : $scope.checkedOutItem.user,
         'isCheckedOut' : true
@@ -782,6 +859,9 @@ var checkedItemUserName;
   }
   $scope.openCreateStock = function(){
     $('#createStock').toggle();
+    $('#createStockMessage').html('');
+    $('#createStockMessage').removeClass('alert-danger alert-success');
+
   }
   $scope.selectUsers = function(){
     $('#viewStockButton').toggle();
@@ -790,7 +870,11 @@ var checkedItemUserName;
     $('#createUser').css('display','none');
   }
   $scope.openCreateUser = function(){
+
     $('#createUser').toggle();
+    $('#createUserMessage').html('');
+    $('#createUserMessage').removeClass('alert-danger alert-success');
+
   }
 
   // Reveal Buttons

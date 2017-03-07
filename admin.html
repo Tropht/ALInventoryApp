@@ -1,3 +1,19 @@
+<style>
+.msg{
+
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px 10px;
+
+}
+
+
+</style>
 <div class="container" ng-controller="inventoryCtrl" id="inventoryApp.admin">
 
   <section id="adminSection">
@@ -22,6 +38,8 @@
         <!-- Create Stock Pop-up -->
         <section id="createStock" class="collapse">
           <h3>Create New Inventory</h3>
+          <div id="createStockMessage" class="msg"></div>
+
           <form>
             <input type="text" class="form-control" placeholder="Item Name" ng-model="newStock.name" aria-describedby="sizing-addon1" required>
             <input type="text" class="form-control" placeholder="Item Type" ng-model="newStock.type" aria-describedby="sizing-addon1" required>
@@ -62,6 +80,7 @@
         <!-- Create User Popup -->
         <section id="createUser">
             <h3>Create New User</h3>
+            <div id="createUserMessage" class="msg"></div>
             <form>
               <input type="text" placeholder="User First Name" ng-model="newUser.fname" aria-describedby="sizing-addon1" required>
               <input type="text" placeholder="User Last Name" ng-model="newUser.lname" aria-describedby="sizing-addon1" required>
@@ -92,7 +111,7 @@
         </h1>
         <i class="fa fa-times" aria-hidden="true" ng-click="closeEditStock()"></i>
       </header>
-      <span id="updateStockMsg"></span>
+      <div id="updateStockMessage" class="msg"></div>
       <form>
         <span>Name:</span>
         <input id="updateName" type="text" class="form-control" placeholder="Item name" ng-model="updatedStock.name" aria-describedby="sizing-addon1">
@@ -122,6 +141,7 @@
         </h1>
         <i class="fa fa-times" aria-hidden="true" ng-click="closeEditUser()"></i>
       </header>
+      <div id="updateUserMessage" class="msg"></div>
       <form>
         <span>First Name:</span>
         <input id="updateFirstName" type="text" class="form-control" placeholder="Item name" ng-model="updatedUser.fname" aria-describedby="sizing-addon1">
