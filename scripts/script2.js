@@ -156,12 +156,11 @@ inventoryApp.service('dbUsers', function(){
           console.log(obj[prop]);
           console.log(user);
           console.log(id);
-          var targetUser = user;
-
+          var userToDelete = user;
           //check if user has any items checked out
           //console.log(obj['fname'] + " " + obj['lname']);
           //console.log(obj);
-          firebase.database().ref('/stock').orderByChild("lastUser").equalTo(obj['fname'] + " " + obj['lname']).once('value', function(d){
+          firebase.database().ref('/stock').orderByChild("currentUser").equalTo(obj['fname'] + " " + obj['lname']).once('value', function(d){
 
             var result = d.val();
 
@@ -191,28 +190,43 @@ inventoryApp.service('dbUsers', function(){
               })
 
               if(checkedOut.length == 0){
-                console.log(targetUser);
-                console.log("deleted 1");
-                /*
-                firebase.database().ref('/users/' + user).remove(function(error){
+                //console.log(targetUser);
+                //console.log("deleted 1");
 
-                    if(!error){
+                var userRef = firebase.database().ref('/users');
 
-                      $('#updateUserMessage').removeClass('alert-danger');
-                      $('#updateUserMessage').addClass('alert-success')
-                      $('#updateUserMessage').html('Success!');
+                userRef.once('value', function(snapshot){
 
-                      //Close Pop Up here, if we want
+                  var children = snapshot.val();
 
-                    }else{
+                  for (var child_id in children){
 
-                      $('#updateUserMessage').removeClass('alert-success');
-                      $('#updateUserMessage').addClass('alert-danger')
-                      $('#updateUserMessage').html(error.message);
+                    if(child_id == userToDelete){
 
-                      }
+                    var child = userRef.child(child_id);
+
+                    child.remove(function(error){
+
+                        if(!error){
+
+                          $('#updateUserMessage').removeClass('alert-danger');
+                          $('#updateUserMessage').addClass('alert-success')
+                          $('#updateUserMessage').html('Success!');
+
+                          //Close Pop Up here, if we want
+
+                          }else{
+
+                          $('#updateUserMessage').removeClass('alert-success');
+                          $('#updateUserMessage').addClass('alert-danger')
+                          $('#updateUserMessage').html(error.message);
+
+                            }
+                          });
+                        };
+                      };
                     });
-                    */
+
               }else{
 
               $('#updateUserMessage').removeClass('alert-success');
@@ -223,29 +237,40 @@ inventoryApp.service('dbUsers', function(){
           }else{
 
           //user has no items checked out, go ahead and remove them.
-          console.log(targetUser);
-          console.log(id);
-          console.log("deleted");
-/*
-          firebase.database().ref('/users/' + user).remove(function(error){
+          //define the ref
+          var userRef = firebase.database().ref('/users');
 
-              if(!error){
+          userRef.once('value', function(snapshot){
+          //get a snapshot
+            var children = snapshot.val();
+          //iterate and find the right user
+            for (var child_id in children){
 
-                $('#updateUserMessage').removeClass('alert-danger');
-                $('#updateUserMessage').addClass('alert-success')
-                $('#updateUserMessage').html('Success!');
+              if(child_id == userToDelete){
 
-                //Close Pop Up here, if we want
+              var child = userRef.child(child_id);
+              //remove the user and catch error/flash success
+              child.remove(function(error){
 
-              }else{
+                  if(!error){
 
-                $('#updateUserMessage').removeClass('alert-success');
-                $('#updateUserMessage').addClass('alert-danger')
-                $('#updateUserMessage').html(error.message);
+                    $('#updateUserMessage').removeClass('alert-danger');
+                    $('#updateUserMessage').addClass('alert-success')
+                    $('#updateUserMessage').html('Success!');
 
-                }
+                    //Close Pop Up here, if we want
+
+                    }else{
+
+                    $('#updateUserMessage').removeClass('alert-success');
+                    $('#updateUserMessage').addClass('alert-danger')
+                    $('#updateUserMessage').html(error.message);
+
+                      }
+                    });
+                  };
+                };
               });
-              */
             }
           }); //close query
           }//End If Statement
@@ -349,7 +374,7 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
   }
 
-  this.deleteStock = function(id){
+  this.deleteStock = function(id, status, notes){
 
     //Find Item
     this.database.ref('/stock').once('value', function(data){
@@ -364,25 +389,34 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/stock/' + item).remove(function(error){
+          obj["deleteNotes"] = notes;
+          obj["deleteReason"] = status;
 
-            //callback
+          var oldRef = firebase.database().ref('/stock/' + item);
+          var newRef = firebase.database().ref('/archivedItems/');
+
+          newRef.push(obj, function(error){
             if(!error){
 
-              $('#updateStockMessage').removeClass('alert-danger');
-              $('#updateStockMessage').addClass('alert-success');
-              $('#updateStockMessage').html('Success!');
+              //firebase.database().ref('/stock/' + item).remove(function(error){
+              oldRef.remove(function(error){
+                  //callback
+                  if(!error){
 
-            }else{
+                    $('#updateStockMessage').removeClass('alert-danger');
+                    $('#updateStockMessage').addClass('alert-success');
+                    $('#updateStockMessage').html('Success!');
 
-              $('#updateStockMessage').removeClass('alert-success');
-              $('#updateStockMessage').addClass('alert-danger');
-              $('#updateStockMessage').html(error.message);
+                  }else{
 
-            }
+                    $('#updateStockMessage').removeClass('alert-success');
+                    $('#updateStockMessage').addClass('alert-danger');
+                    $('#updateStockMessage').html(error.message);
 
+                    }
+                  });
+                }
               });
-
             };
           }
         }
@@ -768,12 +802,32 @@ var decrypted = $crypto.decrypt(encrypted);
     }//End of Else Statement
   };//End of Create New Stock
 
+  $scope.deleteOptions = [
+    {name:"Item is broken.", value:"broken"},
+    {name:"Item was lost/cannot be located.", value:"lost"},
+    {name:"Item is obsolete", value:"obsolete"},
+    {name:"Item has been replaced/retired", value:"replaced"}
+  ];
+
   // Delete Stock
+ $scope.confirmRemoveStock = function(){
+
+   $("#confirmDeleteButton, #updateName, #updateType, #updateNotes, .hideDelete").hide();
+   $("#updateButton").hide();
+   $("#deleteButton, #deleteReason, #deleteNotes, .showDelete").show();
+   $("#updateStockMessage").removeClass("alert-success alert-danger");
+   $("#updateStockMessage").addClass("alert-warning alert");
+   $("#updateStockMessage").html("Are you sure?");
+
+  }
+
   $scope.removeStock = function(){
 
-    var id = $('#updateID').val();
-
-    dbStock.deleteStock(id);
+    var status = $scope.deleteReason.value;
+    var id     = $('#updateID').val();
+    var notes   = $scope.deleteNotes;
+    //console.log(status+id+notes)
+    dbStock.deleteStock(id, status, notes);
 
 	};
 
@@ -781,9 +835,14 @@ var decrypted = $crypto.decrypt(encrypted);
   $scope.closeEditStock = function(){
     $("#editStock").css("display","none");
     $('#updateStockMessage').html('');
-    $('#updateStockMessage').removeClass('alert-danger alert-success');
+    $('#updateStockMessage').removeClass('alert-danger alert-success alert-warning');
+
+    $("#confirmDeleteButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
+    $("#updateButton").show();
+    $("#deleteButton, #deleteReason, #deleteNotes, .showDelete").hide();
 
   };
+  
   $scope.editStock = function(){
     $("#editStock").css("display","block");
     $('#updateName').val(this.item.name);

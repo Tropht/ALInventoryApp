@@ -113,17 +113,23 @@
       </header>
       <div id="updateStockMessage" class="msg"></div>
       <form>
-        <span>Name:</span>
+        <span class="hideDelete">Name:</span>
         <input id="updateName" type="text" class="form-control" placeholder="Item name" ng-model="updatedStock.name" aria-describedby="sizing-addon1">
-        <span>Type:</span>
+        <span class="hideDelete">Type:</span>
         <input id="updateType" type="text" class="form-control" placeholder="Item type" ng-model="updatedStock.type" aria-describedby="sizing-addon1">
-        <span>Notes:</span>
+        <span class="hideDelete">Notes:</span>
         <textarea id="updateNotes" ng-model="updatedStock.notes" class="form-control" rows="5"></textarea>
 
         <input id="updateID" type="number" name="name" style="display: none;" readonly>
-
+        <!--for confirming deletion-->
+        <select id="deleteReason" class="form-control" style="display:none;" ng-model="deleteReason" ng-options="option.name for option in deleteOptions" aria-describedby="sizing-addon1">
+          <option value="">Select a Reason</option>
+        </select>
+        <span style="display:none;" class="showDelete">Deletion Notes</span>
+        <textarea style="display:none;" id="deleteNotes" ng-model="deleteNotes" class="form-control" rows="5"></textarea>
         <aside class="buttons">
-          <button type="button" class="btn btn-info" ng-click="removeStock()">Delete</button>
+          <button id="confirmDeleteButton" type="button" class="btn btn-info" ng-click="confirmRemoveStock()">Delete</button>
+          <button id="deleteButton" type="button" class="btn btn-info" style="display:none;" ng-click="removeStock()">Confirm Delete</button>
           <button id="updateButton" type="button" class="btn btn-info" name="button" ng-click="reviseStock(updatedStock)">Update</button>
         </aside>
 
