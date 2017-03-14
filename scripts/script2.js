@@ -130,17 +130,19 @@ inventoryApp.service('dbUsers', function(){
   this.createUser = function(data){
 
     return this.database.ref('/users').push(data, function(error){
-      console.log(error.message);
+      if(error){console.log(error.message)};
     });
 
   }
 
   this.deleteUser = function(id){
 
+    console.log(id);
     // Retrieve User Data
     this.database.ref('/users').once('value', function(data){
 
-      userData = data.val()
+      var userData = data.val();
+
       // Find user in User Object
       for(var user in userData){
 
@@ -151,6 +153,80 @@ inventoryApp.service('dbUsers', function(){
 
         if(id == obj[prop]){
 
+          console.log(obj[prop]);
+          console.log(user);
+          console.log(id);
+          var targetUser = user;
+
+          //check if user has any items checked out
+          //console.log(obj['fname'] + " " + obj['lname']);
+          //console.log(obj);
+          firebase.database().ref('/stock').orderByChild("lastUser").equalTo(obj['fname'] + " " + obj['lname']).once('value', function(d){
+
+            var result = d.val();
+
+            if(result){
+
+              //looks like this user hasn't turned in their company equipment.
+              //throw an error.  That'll show 'em.
+
+              var message = "This user cannot be deleted until the following " +
+                            "items are checked in (or otherwise accounted for): ";
+
+              var items = "<br><br><ul> ";
+              var checkedOut = [];
+
+              for(var item in result){
+
+                var obj = result[item];
+
+                if(obj['isCheckedOut'] == true){
+                  checkedOut.push(obj['name']);
+                }
+                console.log(checkedOut);
+              }
+
+              checkedOut.forEach(function(e){
+                items += "<li>" + e + "</li>";
+              })
+
+              if(checkedOut.length == 0){
+                console.log(targetUser);
+                console.log("deleted 1");
+                /*
+                firebase.database().ref('/users/' + user).remove(function(error){
+
+                    if(!error){
+
+                      $('#updateUserMessage').removeClass('alert-danger');
+                      $('#updateUserMessage').addClass('alert-success')
+                      $('#updateUserMessage').html('Success!');
+
+                      //Close Pop Up here, if we want
+
+                    }else{
+
+                      $('#updateUserMessage').removeClass('alert-success');
+                      $('#updateUserMessage').addClass('alert-danger')
+                      $('#updateUserMessage').html(error.message);
+
+                      }
+                    });
+                    */
+              }else{
+
+              $('#updateUserMessage').removeClass('alert-success');
+              $('#updateUserMessage').addClass('alert-danger')
+              $('#updateUserMessage').html(message + items);
+            }
+
+          }else{
+
+          //user has no items checked out, go ahead and remove them.
+          console.log(targetUser);
+          console.log(id);
+          console.log("deleted");
+/*
           firebase.database().ref('/users/' + user).remove(function(error){
 
               if(!error){
@@ -163,15 +239,18 @@ inventoryApp.service('dbUsers', function(){
 
               }else{
 
-                $('#updateUserMessage').removeClass('alert-danger');
-                $('#updateUserMessage').addClass('alert-success')
+                $('#updateUserMessage').removeClass('alert-success');
+                $('#updateUserMessage').addClass('alert-danger')
                 $('#updateUserMessage').html(error.message);
 
-              }
-            });
-        }//End If Statement
+                }
+              });
+              */
+            }
+          }); //close query
+          }//End If Statement
+        }//End For Loop
       }
-      }//End For Loop
     });
   }//End Delete User
 
