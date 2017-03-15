@@ -374,7 +374,7 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
   }
 
-  this.deleteStock = function(id, status, notes){
+  this.deleteStock = function(id, status, value, notes){
 
     //Find Item
     this.database.ref('/stock').once('value', function(data){
@@ -390,6 +390,7 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
         if(id == obj[prop]){
 
           obj["deleteNotes"] = notes;
+          obj["deleteValue"] = value;
           obj["deleteReason"] = status;
 
           var oldRef = firebase.database().ref('/stock/' + item);
@@ -806,43 +807,60 @@ var decrypted = $crypto.decrypt(encrypted);
     {name:"Item is broken.", value:"broken"},
     {name:"Item was lost/cannot be located.", value:"lost"},
     {name:"Item is obsolete", value:"obsolete"},
-    {name:"Item has been replaced/retired", value:"replaced"}
+    {name:"Item has been replaced/retired", value:"replaced"},
+    {name:"Item has been sold.", value:"sold"},
+    {name: "Item has been donated.", value:"donated"},
   ];
 
   // Delete Stock
  $scope.confirmRemoveStock = function(){
 
-   $("#confirmDeleteButton, #updateName, #updateType, #updateNotes, .hideDelete").hide();
+   $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").hide();
    $("#updateButton").hide();
-   $("#deleteButton, #deleteReason, #deleteNotes, .showDelete").show();
+   $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").show();
+
    $("#updateStockMessage").removeClass("alert-success alert-danger");
    $("#updateStockMessage").addClass("alert-warning alert");
    $("#updateStockMessage").html("Are you sure?");
 
   }
 
+  $scope.cancelRemoveStock = function(){
+
+    $('#updateStockMessage').html('');
+    $('#updateStockMessage').removeClass('alert-danger alert-success alert-warning');
+
+    $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
+    $("#updateButton").show();
+    $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").hide();
+
+  }
+
   $scope.removeStock = function(){
 
     var status = $scope.deleteReason.value;
+    var value  = $scope.deleteValue;
     var id     = $('#updateID').val();
-    var notes   = $scope.deleteNotes;
+    var notes  = $scope.deleteNotes;
     //console.log(status+id+notes)
-    dbStock.deleteStock(id, status, notes);
+    dbStock.deleteStock(id, status, value, notes);
 
 	};
 
   // Edit Stock
+
+  //Handle view manipulation
   $scope.closeEditStock = function(){
     $("#editStock").css("display","none");
     $('#updateStockMessage').html('');
     $('#updateStockMessage').removeClass('alert-danger alert-success alert-warning');
 
-    $("#confirmDeleteButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
+    $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
     $("#updateButton").show();
-    $("#deleteButton, #deleteReason, #deleteNotes, .showDelete").hide();
+    $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").hide();
 
   };
-  
+
   $scope.editStock = function(){
     $("#editStock").css("display","block");
     $('#updateName').val(this.item.name);
@@ -850,6 +868,7 @@ var decrypted = $crypto.decrypt(encrypted);
     $('#updateID').val(this.item.id);
     $('#updateNotes').val(this.item.notes);
   };
+
   $scope.reviseStock = function(data){
 
     var data = {
