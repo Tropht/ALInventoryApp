@@ -612,7 +612,7 @@ $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState
 //if the state is trying to change to admin, check authentication
   if(toState.name === "admin"){
     //use our auth service to see what's up
-    if(!authService.auth.currentUser){
+    if(!authService.auth.currentUser || authService.auth.currentUser.isAnonymous){
       //Not logged in! prevent the action and
       //send them to the login form
       event.preventDefault();
@@ -621,7 +621,6 @@ $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState
     }else{
 
       //they're logged in, print the user to the console.
-      console.log(authService.auth.currentUser);
 
     }
 
@@ -957,18 +956,37 @@ var checkedItemUserName;
   $scope.checkOut = function(){
     //console.log(stockID);
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-      //console.log("Matches");
+
       var data = {
         'currentUser' : $scope.checkedOutItem.user,
         'isCheckedOut' : true
       }
+
+      //is someone signed in?  if so, we don't want to destroy the admin session.
+      if(!authService.auth.currentUser){
+        //no? sign in anonymously.
+      authService.auth.signInAnonymously().then(function(){
+        //update the DB
         dbStock.updateStock(stockID, data);
+        //kill the anon session.
+        authService.auth.signOut();
+
+      }).catch(function(error){
+        console.log(error.code);
+        console.log(error.message);
+      });
     }else{
+
+      //admin is signed in, so just do it.
+      dbStock.updateStock(stockID, data);
+
+      }
+     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
         $('#checkoutMsg').addClass('alert-danger');
         $('#checkoutMsg').html('Incorrect PIN!');
-    }
+      }
 
   };
 
@@ -988,7 +1006,26 @@ var checkedItemUserName;
         'lastUser'  : $scope.checkedUser,
         'isCheckedOut' : false
       }
+
+      if(!authService.auth.currentUser){
+        //no? sign in anonymously.
+      authService.auth.signInAnonymously().then(function(){
+        //update the DB
         dbStock.updateStock(stockID, data);
+        //kill the anon session.
+        authService.auth.signOut();
+
+      }).catch(function(error){
+        console.log(error.code);
+        console.log(error.message);
+      });
+    }else{
+
+      //admin is signed in, so just do it.
+      dbStock.updateStock(stockID, data);
+
+      }
+        
     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
