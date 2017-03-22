@@ -751,26 +751,13 @@ var decrypted = $crypto.decrypt(encrypted);
 
   $scope.dbStock = dbStock.getStock();
 
-  //.then(function(data){
-    //$scope.dbStock = data.val();
 
-    //Set a listener on the database to
-    //update the scope when values change.
-    //This may need to be refactored - ACW
+  firebase.database().ref('/stock').limitToLast(1000).on('value', function(data){
 
-    firebase.database().ref('/stock').limitToLast(1000).on('value', function(data){
+    $scope.dbStock = data.val();
 
-      $scope.dbStock = data.val();
+  });
 
-    });
-  //});
-/*
-  var stock = dbStock.getStock()
-    $scope.dbStock = stock;
-    // console.log($scope.dbStock);
-*/
-  // Create Stock
-  // $scope.newStock = {};
 
   $scope.createNewStock = function(){
     if($scope.newStock.name == null || $scope.newStock.type == null){
@@ -1025,7 +1012,7 @@ var checkedItemUserName;
       dbStock.updateStock(stockID, data);
 
       }
-        
+
     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
@@ -1043,24 +1030,31 @@ var checkedItemUserName;
 
   // Hide Buttons
   $scope.selectStock = function(){
-    $('#viewUsersButton').toggle();
-    $('#viewUsersButtonGrey').toggle();
-    $('#viewStock').toggle();
+    $('#viewStockButton').css('background-color', 'darkgray');
+    $('#viewUsersButton').css('background-color', '#2ecc71');
+    $('#viewUsers').hide();
+    $('#viewStock').show();
     $('#createStock').css('display','none');
 
   }
   $scope.openCreateStock = function(){
+
     $('#createStock').toggle();
     $('#createStockMessage').html('');
     $('#createStockMessage').removeClass('alert-danger alert-success');
 
   }
+
   $scope.selectUsers = function(){
-    $('#viewStockButton').toggle();
-    $('#viewStockButtonGrey').toggle();
-    $('#viewUsers').toggle();
+
+    $('#viewUsersButton').css('background-color', 'darkgray');
+    $('#viewStockButton').css('background-color', '#2ecc71');
+    $('#viewStock').hide();
+    $('#viewUsers').show();
     $('#createUser').css('display','none');
+
   }
+
   $scope.openCreateUser = function(){
 
     $('#createUser').toggle();
@@ -1068,19 +1062,6 @@ var checkedItemUserName;
     $('#createUserMessage').removeClass('alert-danger alert-success');
 
   }
-
-  // Reveal Buttons
-  $scope.revealUsersButton = function(){
-    $('#viewUsersButtonGrey').toggle();
-    $('#viewUsersButton').toggle();
-    $('#viewStock').toggle();
-  }
-  $scope.revealStockButton = function(){
-    $('#viewStockButtonGrey').toggle();
-    $('#viewStockButton').toggle();
-    $('#viewUsers').toggle();
-  }
-
 
   // ////////////
   // Functions
