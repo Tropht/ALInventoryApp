@@ -130,17 +130,19 @@ inventoryApp.service('dbUsers', function(){
   this.createUser = function(data){
 
     return this.database.ref('/users').push(data, function(error){
-      console.log(error.message);
+      if(error){console.log(error.message)};
     });
 
   }
 
   this.deleteUser = function(id){
 
+    console.log(id);
     // Retrieve User Data
     this.database.ref('/users').once('value', function(data){
 
-      userData = data.val()
+      var userData = data.val();
+
       // Find user in User Object
       for(var user in userData){
 
@@ -151,27 +153,129 @@ inventoryApp.service('dbUsers', function(){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/users/' + user).remove(function(error){
+          console.log(obj[prop]);
+          console.log(user);
+          console.log(id);
+          var userToDelete = user;
+          //check if user has any items checked out
+          //console.log(obj['fname'] + " " + obj['lname']);
+          //console.log(obj);
+          firebase.database().ref('/stock').orderByChild("currentUser").equalTo(obj['fname'] + " " + obj['lname']).once('value', function(d){
 
-              if(!error){
+            var result = d.val();
 
-                $('#updateUserMessage').removeClass('alert-danger');
-                $('#updateUserMessage').addClass('alert-success')
-                $('#updateUserMessage').html('Success!');
+            if(result){
 
-                //Close Pop Up here, if we want
+              //looks like this user hasn't turned in their company equipment.
+              //throw an error.  That'll show 'em.
+
+              var message = "This user cannot be deleted until the following " +
+                            "items are checked in (or otherwise accounted for): ";
+
+              var items = "<br><br><ul> ";
+              var checkedOut = [];
+
+              for(var item in result){
+
+                var obj = result[item];
+
+                if(obj['isCheckedOut'] == true){
+                  checkedOut.push(obj['name']);
+                }
+                console.log(checkedOut);
+              }
+
+              checkedOut.forEach(function(e){
+                items += "<li>" + e + "</li>";
+              })
+
+              if(checkedOut.length == 0){
+                //console.log(targetUser);
+                //console.log("deleted 1");
+
+                var userRef = firebase.database().ref('/users');
+
+                userRef.once('value', function(snapshot){
+
+                  var children = snapshot.val();
+
+                  for (var child_id in children){
+
+                    if(child_id == userToDelete){
+
+                    var child = userRef.child(child_id);
+
+                    child.remove(function(error){
+
+                        if(!error){
+
+                          $('#updateUserMessage').removeClass('alert-danger');
+                          $('#updateUserMessage').addClass('alert-success')
+                          $('#updateUserMessage').html('Success!');
+
+                          //Close Pop Up here, if we want
+
+                          }else{
+
+                          $('#updateUserMessage').removeClass('alert-success');
+                          $('#updateUserMessage').addClass('alert-danger')
+                          $('#updateUserMessage').html(error.message);
+
+                            }
+                          });
+                        };
+                      };
+                    });
 
               }else{
 
-                $('#updateUserMessage').removeClass('alert-danger');
-                $('#updateUserMessage').addClass('alert-success')
-                $('#updateUserMessage').html(error.message);
+              $('#updateUserMessage').removeClass('alert-success');
+              $('#updateUserMessage').addClass('alert-danger')
+              $('#updateUserMessage').html(message + items);
+            }
 
-              }
-            });
-        }//End If Statement
+          }else{
+
+          //user has no items checked out, go ahead and remove them.
+          //define the ref
+          var userRef = firebase.database().ref('/users');
+
+          userRef.once('value', function(snapshot){
+          //get a snapshot
+            var children = snapshot.val();
+          //iterate and find the right user
+            for (var child_id in children){
+
+              if(child_id == userToDelete){
+
+              var child = userRef.child(child_id);
+              //remove the user and catch error/flash success
+              child.remove(function(error){
+
+                  if(!error){
+
+                    $('#updateUserMessage').removeClass('alert-danger');
+                    $('#updateUserMessage').addClass('alert-success')
+                    $('#updateUserMessage').html('Success!');
+
+                    //Close Pop Up here, if we want
+
+                    }else{
+
+                    $('#updateUserMessage').removeClass('alert-success');
+                    $('#updateUserMessage').addClass('alert-danger')
+                    $('#updateUserMessage').html(error.message);
+
+                      }
+                    });
+                  };
+                };
+              });
+            }
+          }); //close query
+          }//End If Statement
+        }//End For Loop
       }
-      }//End For Loop
     });
   }//End Delete User
 
@@ -270,7 +374,7 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
   }
 
-  this.deleteStock = function(id){
+  this.deleteStock = function(id, status, value, notes){
 
     //Find Item
     this.database.ref('/stock').once('value', function(data){
@@ -285,25 +389,35 @@ inventoryApp.service('dbStock', ['$timeout', function($timeout){
 
         if(id == obj[prop]){
 
-          firebase.database().ref('/stock/' + item).remove(function(error){
+          obj["deleteNotes"] = notes;
+          obj["deleteValue"] = value;
+          obj["deleteReason"] = status;
 
-            //callback
+          var oldRef = firebase.database().ref('/stock/' + item);
+          var newRef = firebase.database().ref('/archivedItems/');
+
+          newRef.push(obj, function(error){
             if(!error){
 
-              $('#updateStockMessage').removeClass('alert-danger');
-              $('#updateStockMessage').addClass('alert-success');
-              $('#updateStockMessage').html('Success!');
+              //firebase.database().ref('/stock/' + item).remove(function(error){
+              oldRef.remove(function(error){
+                  //callback
+                  if(!error){
 
-            }else{
+                    $('#updateStockMessage').removeClass('alert-danger');
+                    $('#updateStockMessage').addClass('alert-success');
+                    $('#updateStockMessage').html('Success!');
 
-              $('#updateStockMessage').removeClass('alert-success');
-              $('#updateStockMessage').addClass('alert-danger');
-              $('#updateStockMessage').html(error.message);
+                  }else{
 
-            }
+                    $('#updateStockMessage').removeClass('alert-success');
+                    $('#updateStockMessage').addClass('alert-danger');
+                    $('#updateStockMessage').html(error.message);
 
+                    }
+                  });
+                }
               });
-
             };
           }
         }
@@ -498,7 +612,7 @@ $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState
 //if the state is trying to change to admin, check authentication
   if(toState.name === "admin"){
     //use our auth service to see what's up
-    if(!authService.auth.currentUser){
+    if(!authService.auth.currentUser || authService.auth.currentUser.isAnonymous){
       //Not logged in! prevent the action and
       //send them to the login form
       event.preventDefault();
@@ -507,7 +621,6 @@ $rootScope.$on('$stateChangeStart', function(event, toState, toParams, fromState
     }else{
 
       //they're logged in, print the user to the console.
-      console.log(authService.auth.currentUser);
 
     }
 
@@ -638,26 +751,13 @@ var decrypted = $crypto.decrypt(encrypted);
 
   $scope.dbStock = dbStock.getStock();
 
-  //.then(function(data){
-    //$scope.dbStock = data.val();
 
-    //Set a listener on the database to
-    //update the scope when values change.
-    //This may need to be refactored - ACW
+  firebase.database().ref('/stock').limitToLast(1000).on('value', function(data){
 
-    firebase.database().ref('/stock').limitToLast(1000).on('value', function(data){
+    $scope.dbStock = data.val();
 
-      $scope.dbStock = data.val();
+  });
 
-    });
-  //});
-/*
-  var stock = dbStock.getStock()
-    $scope.dbStock = stock;
-    // console.log($scope.dbStock);
-*/
-  // Create Stock
-  // $scope.newStock = {};
 
   $scope.createNewStock = function(){
     if($scope.newStock.name == null || $scope.newStock.type == null){
@@ -689,22 +789,64 @@ var decrypted = $crypto.decrypt(encrypted);
     }//End of Else Statement
   };//End of Create New Stock
 
+  $scope.deleteOptions = [
+    {name:"Item is broken.", value:"broken"},
+    {name:"Item was lost/cannot be located.", value:"lost"},
+    {name:"Item is obsolete", value:"obsolete"},
+    {name:"Item has been replaced/retired", value:"replaced"},
+    {name:"Item has been sold.", value:"sold"},
+    {name: "Item has been donated.", value:"donated"},
+  ];
+
   // Delete Stock
+ $scope.confirmRemoveStock = function(){
+
+   $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").hide();
+   $("#updateButton").hide();
+   $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").show();
+
+   $("#updateStockMessage").removeClass("alert-success alert-danger");
+   $("#updateStockMessage").addClass("alert-warning alert");
+   $("#updateStockMessage").html("Are you sure?");
+
+  }
+
+  $scope.cancelRemoveStock = function(){
+
+    $('#updateStockMessage').html('');
+    $('#updateStockMessage').removeClass('alert-danger alert-success alert-warning');
+
+    $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
+    $("#updateButton").show();
+    $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").hide();
+
+  }
+
   $scope.removeStock = function(){
 
-    var id = $('#updateID').val();
-
-    dbStock.deleteStock(id);
+    var status = $scope.deleteReason.value;
+    var value  = $scope.deleteValue;
+    var id     = $('#updateID').val();
+    var notes  = $scope.deleteNotes;
+    //console.log(status+id+notes)
+    dbStock.deleteStock(id, status, value, notes);
 
 	};
 
   // Edit Stock
+
+  //Handle view manipulation
   $scope.closeEditStock = function(){
     $("#editStock").css("display","none");
     $('#updateStockMessage').html('');
-    $('#updateStockMessage').removeClass('alert-danger alert-success');
+    $('#updateStockMessage').removeClass('alert-danger alert-success alert-warning');
+
+    $("#confirmDeleteStockButton, #updateName, #updateType, #updateNotes, .hideDelete").show();
+    $("#updateButton").show();
+    $("#deleteButton, #cancelDeleteStockButton, #deleteReason, #deleteNotes, .showDelete").hide();
 
   };
+
   $scope.editStock = function(){
     $("#editStock").css("display","block");
     $('#updateName').val(this.item.name);
@@ -712,6 +854,7 @@ var decrypted = $crypto.decrypt(encrypted);
     $('#updateID').val(this.item.id);
     $('#updateNotes').val(this.item.notes);
   };
+
   $scope.reviseStock = function(data){
 
     var data = {
@@ -800,18 +943,37 @@ var checkedItemUserName;
   $scope.checkOut = function(){
     //console.log(stockID);
     if($scope.checkPin($scope.checkedOutItem.user, $scope.checkOutPin)){
-      //console.log("Matches");
+
       var data = {
         'currentUser' : $scope.checkedOutItem.user,
         'isCheckedOut' : true
       }
+
+      //is someone signed in?  if so, we don't want to destroy the admin session.
+      if(!authService.auth.currentUser){
+        //no? sign in anonymously.
+      authService.auth.signInAnonymously().then(function(){
+        //update the DB
         dbStock.updateStock(stockID, data);
+        //kill the anon session.
+        authService.auth.signOut();
+
+      }).catch(function(error){
+        console.log(error.code);
+        console.log(error.message);
+      });
     }else{
+
+      //admin is signed in, so just do it.
+      dbStock.updateStock(stockID, data);
+
+      }
+     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
         $('#checkoutMsg').addClass('alert-danger');
         $('#checkoutMsg').html('Incorrect PIN!');
-    }
+      }
 
   };
 
@@ -831,7 +993,26 @@ var checkedItemUserName;
         'lastUser'  : $scope.checkedUser,
         'isCheckedOut' : false
       }
+
+      if(!authService.auth.currentUser){
+        //no? sign in anonymously.
+      authService.auth.signInAnonymously().then(function(){
+        //update the DB
         dbStock.updateStock(stockID, data);
+        //kill the anon session.
+        authService.auth.signOut();
+
+      }).catch(function(error){
+        console.log(error.code);
+        console.log(error.message);
+      });
+    }else{
+
+      //admin is signed in, so just do it.
+      dbStock.updateStock(stockID, data);
+
+      }
+
     }else{
 
         $('#checkoutMsg').removeClass('alert-success');
@@ -849,24 +1030,31 @@ var checkedItemUserName;
 
   // Hide Buttons
   $scope.selectStock = function(){
-    $('#viewUsersButton').toggle();
-    $('#viewUsersButtonGrey').toggle();
-    $('#viewStock').toggle();
+    $('#viewStockButton').css('background-color', 'darkgray');
+    $('#viewUsersButton').css('background-color', '#2ecc71');
+    $('#viewUsers').hide();
+    $('#viewStock').show();
     $('#createStock').css('display','none');
 
   }
   $scope.openCreateStock = function(){
+
     $('#createStock').toggle();
     $('#createStockMessage').html('');
     $('#createStockMessage').removeClass('alert-danger alert-success');
 
   }
+
   $scope.selectUsers = function(){
-    $('#viewStockButton').toggle();
-    $('#viewStockButtonGrey').toggle();
-    $('#viewUsers').toggle();
+
+    $('#viewUsersButton').css('background-color', 'darkgray');
+    $('#viewStockButton').css('background-color', '#2ecc71');
+    $('#viewStock').hide();
+    $('#viewUsers').show();
     $('#createUser').css('display','none');
+
   }
+
   $scope.openCreateUser = function(){
 
     $('#createUser').toggle();
@@ -874,19 +1062,6 @@ var checkedItemUserName;
     $('#createUserMessage').removeClass('alert-danger alert-success');
 
   }
-
-  // Reveal Buttons
-  $scope.revealUsersButton = function(){
-    $('#viewUsersButtonGrey').toggle();
-    $('#viewUsersButton').toggle();
-    $('#viewStock').toggle();
-  }
-  $scope.revealStockButton = function(){
-    $('#viewStockButtonGrey').toggle();
-    $('#viewStockButton').toggle();
-    $('#viewUsers').toggle();
-  }
-
 
   // ////////////
   // Functions

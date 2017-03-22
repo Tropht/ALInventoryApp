@@ -12,6 +12,20 @@
 
 }
 
+.item-icon{
+    text-align:center;
+    width: 100%;
+}
+
+.itemInfo p{
+  position: relative;
+  top: -18px !important;
+}
+
+.itemClick h2{
+  position: relative;
+  top: -10px;
+}
 
 </style>
 <div class="container" ng-controller="inventoryCtrl">
@@ -27,8 +41,9 @@
     <!-- Item List -->
     <section id="itemOutputList">
       <article ng-click="itemClick()" ng-repeat="item in dbStock | searchForStock:searchStock">
+
         <aside class="itemIcon">
-            Icon
+            <i class="fa fa-cog fa-4x item-icon" style="line-height: 88px;" aria-hidden="true"></i>
         </aside>
         <aside class="itemInfo">
           <p>
